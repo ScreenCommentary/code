@@ -34,8 +34,7 @@ class CMultiMedia(QObject):
     def delMedia(self, index):
         self.list.removeMedia(index)
 
-    def playMedia(self, index):
-        self.list.setCurrentIndex(index)
+    def playMedia(self):
         self.player.play()
 
     def stopMedia(self):

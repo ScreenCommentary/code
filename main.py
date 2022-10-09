@@ -1,3 +1,4 @@
+from PyQt5.QtMultimedia import QMediaContent
 from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog
 from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtGui import QPalette
@@ -33,7 +34,7 @@ class CWidget(QWidget):
 
         # signal
         self.btn_video_add.clicked.connect(self.clickAdd)
-        self.btn_script_add.clicked.connect(self.clickDel)
+        self.btn_script_add.clicked.connect(self.clickAddExcel)
         self.btn_play.clicked.connect(self.clickPlay)
         self.btn_stop.clicked.connect(self.clickStop)
         self.btn_pause.clicked.connect(self.clickPause)
@@ -53,17 +54,17 @@ class CWidget(QWidget):
                                                   , ''
                                                   , 'Video (*.mp4 *.mpg *.mpeg *.avi *.wma)')
 
-        if files:
-            cnt = len(files)
-            self.mp.addMedia(files)
+        if files != '':
+            self.mediaPlayer.setMedia(
+                    QMediaContent(QUrl.fromLocalFile(files)))
+            self.btn_play.setEnabled(True)
 
-    def clickDel(self):
+    def clickAddExcel(self):
         file_path, ext = QFileDialog.getOpenFileName(self, '파일 열기', os.getcwd(), 'excel file (*.xls *.xlsx)')
 
 
     def clickPlay(self):
-        index = self.list.currentRow()
-        self.mp.playMedia(index)
+        self.mp.playMedia()
 
     def clickStop(self):
         self.mp.stopMedia()
