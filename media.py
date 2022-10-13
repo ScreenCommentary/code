@@ -27,9 +27,7 @@ class CMultiMedia(QObject):
         self.position_signal.connect(self.parent.updatePos)
 
     def addMedia(self, files):
-        for f in files:
-            url = QUrl.fromLocalFile(f)
-            self.list.addMedia(QMediaContent(url))
+        self.player.setMedia(QMediaContent(QUrl.fromLocalFile(files)))
 
     def delMedia(self, index):
         self.list.removeMedia(index)

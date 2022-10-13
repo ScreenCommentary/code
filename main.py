@@ -52,8 +52,7 @@ class CWidget(QWidget):
         files, ext = QFileDialog.getOpenFileNames(self, "Open Movie", QDir.homePath())
 
         if files != '':
-            print('success')
-            self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(files)))
+            self.mp.addMedia(files)
     def clickAddExcel(self):
         file_path, ext = QFileDialog.getOpenFileName(self, '파일 열기', os.getcwd(), 'excel file (*.xls *.xlsx)')
         if file_path:
