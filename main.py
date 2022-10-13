@@ -1,6 +1,6 @@
-from PyQt5.QtMultimedia import QMediaContent
-from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog
-from PyQt5.QtCore import Qt, QUrl
+from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
+from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QMessageBox
+from PyQt5.QtCore import Qt, QUrl, QDir
 from PyQt5.QtGui import QPalette
 from PyQt5.uic import loadUi
 from media import CMultiMedia
@@ -18,7 +18,7 @@ class CWidget(QWidget):
 
         # Multimedia Object
         self.mp = CMultiMedia(self, self.view)
-
+        self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         # video background color
         pal = QPalette()
         pal.setColor(QPalette.Background, Qt.black)
@@ -49,22 +49,27 @@ class CWidget(QWidget):
 
 
     def clickAdd(self):
-        files, ext = QFileDialog.getOpenFileNames(self
-                                                  , 'Select one or more files to open'
-                                                  , ''
-                                                  , 'Video (*.mp4 *.mpg *.mpeg *.avi *.wma)')
+        files, ext = QFileDialog.getOpenFileNames(self, "Open Movie", QDir.homePath())
 
         if files != '':
-            self.mediaPlayer.setMedia(
-                    QMediaContent(QUrl.fromLocalFile(files)))
-            self.btn_play.setEnabled(True)
-
+            print('success')
+            self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(files)))
     def clickAddExcel(self):
         file_path, ext = QFileDialog.getOpenFileName(self, '파일 열기', os.getcwd(), 'excel file (*.xls *.xlsx)')
+        if file_path:
+            self.df_list = self.loadData(file_path)
 
+            # 콤보박스 워크시트 목록 추가
+            for i in self.df_list:
+                self.cmb.addItem(i.name)
+
+            self.initTableWidget(0)
 
     def clickPlay(self):
-        self.mp.playMedia()
+        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+            self.mediaPlayer.pause()
+        else:
+            self.mediaPlayer.play()
 
     def clickStop(self):
         self.mp.stopMedia()
