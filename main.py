@@ -7,7 +7,10 @@ from media import CMultiMedia
 import os
 import sys
 import datetime
-
+import pandas as pd
+from PyQt5.QtWidgets import  QTableWidgetItem, QTableWidget, QPushButton
+from gtts import gTTS
+from openpyxl.reader.excel import load_workbook
 QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 
 
@@ -40,6 +43,8 @@ class CWidget(QWidget):
         self.btn_pause.clicked.connect(self.clickPause)
         self.btn_forward.clicked.connect(self.clickForward)
         self.btn_prev.clicked.connect(self.clickPrev)
+        self.btn_push.clicked.connect(self.ToTTS)
+        self.btn_push.setEnabled(False)
         #self.btn_push.clicked.connect(self)
         #self.btn_pull.clicked.connect(self)
 
@@ -58,12 +63,12 @@ class CWidget(QWidget):
         file_path, ext = QFileDialog.getOpenFileName(self, '파일 열기', os.getcwd(), 'excel file (*.xls *.xlsx)')
         if file_path:
             self.df_list = self.loadData(file_path)
-
-            # 콤보박스 워크시트 목록 추가
-            for i in self.df_list:
-                self.cmb.addItem(i.name)
-
+            file = file_path
+            self.btn_push.setEnabled(True)  ## 엑셀파일 들어오면 버튼 클릭가능
+            self.ToTTS(file)
             self.initTableWidget(0)
+        else:
+            self.btn_push.setEnabled(False)  ##엑셀파일 읽히기전에는 버튼클릭 불가능
 
     def clickPlay(self):
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
@@ -129,6 +134,54 @@ class CWidget(QWidget):
         stime = f'{stime[:idx]} / {self.duration}'
         self.playtime.setText(stime)
 
+    def loadData(self, file_name):###
+        df_list = []
+        with pd.ExcelFile(file_name) as wb:
+            for i, sn in enumerate(wb.sheet_names):
+                try:
+                    df = pd.read_excel(wb, sheet_name=sn)
+                except Exception as e:
+                    print('File read error:', e)
+                else:
+                    df = df.fillna(0)
+                    df.name = sn
+                    df_list.append(df)
+        return df_list
+
+    def initTableWidget(self, id):###
+        # 테이블 위젯 값 쓰기
+        self.table.clear()
+        # select dataframe
+        df = self.df_list[id];
+        # table write
+        col = len(df.keys())
+        self.table.setColumnCount(col)
+        self.table.setHorizontalHeaderLabels(df.keys())
+
+        row = len(df.index)
+        self.table.setRowCount(row)
+        self.writeTableWidget(id, df, row, col)
+
+    def writeTableWidget(self, id, df, row, col): ###
+        for r in range(row):
+            for c in range(col):
+                item = QTableWidgetItem(str(df.iloc[r][c]))
+                self.table.setItem(r, c, item)
+        self.table.resizeColumnsToContents()
+
+    def ToTTS(self, file): #tts 변환 부분
+        if file is None:
+            self.btn_push.setEnabled(False)
+        else:
+            load_wb = load_workbook(file, data_only=True)
+            # 시트 이름으로 불러오기
+            load_ws = load_wb['Sheet1']
+            maxrow = load_ws.max_row
+            # 셀 주소로 값 출력
+            for i in range(2, maxrow + 1):
+                a = load_ws['A' + str(i)].value
+                eng_wav = gTTS(a, lang='ko')
+                eng_wav.save('kor' + str(i) + '.wav')
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
