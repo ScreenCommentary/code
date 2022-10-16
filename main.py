@@ -43,6 +43,7 @@ class CWidget(QWidget):
         #self.btn_push.clicked.connect(self)
         #self.btn_pull.clicked.connect(self)
 
+        #self.section_list.itemDoubleClicked.connect(self)
         self.list.itemDoubleClicked.connect(self.dbClickList)
         self.vol.valueChanged.connect(self.volumeChanged)
         self.bar.sliderMoved.connect(self.barChanged)
