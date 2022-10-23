@@ -1,6 +1,6 @@
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QMessageBox, QComboBox
-from PyQt5.QtCore import Qt, QUrl, QDir
+from PyQt5.QtCore import Qt, QUrl, QDir, QThread
 from PyQt5.QtGui import QPalette
 from PyQt5.uic import loadUi
 from media import CMultiMedia
@@ -13,11 +13,9 @@ from gtts import gTTS
 from openpyxl.reader.excel import load_workbook
 QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 
-
 class CWidget(QWidget):
     def __init__(self):
         super().__init__()
-        currentPath=os.getcwd()
         loadUi('main.ui', self)
 
         # Multimedia Object
@@ -32,7 +30,7 @@ class CWidget(QWidget):
         # volume, slider
         self.vol.setRange(0, 100)
         self.vol.setValue(50)
-
+        self.progress.setValue(0)
         # play time
         self.duration = ''
 
@@ -54,7 +52,9 @@ class CWidget(QWidget):
         self.vol.valueChanged.connect(self.volumeChanged)
         self.bar.sliderMoved.connect(self.barChanged)
 
-
+        #쓰레드 설정
+        self.ttsThread= ThreadClass(parent=self)
+        self.ttsThread.send_file.connect(self.ttsThread.receive)
     def clickAdd(self):
         files, ext = QFileDialog.getOpenFileNames(self, "Open Movie", QDir.homePath())
 
@@ -173,6 +173,8 @@ class CWidget(QWidget):
         self.list.resizeColumnsToContents()
 
     def ToTTS(self, file): #tts 변환 부분
+
+        self.ttsThread.start()
         if file is None:
             self.btn_push.setEnabled(False)
         else:
@@ -185,6 +187,17 @@ class CWidget(QWidget):
                 a = load_ws['A' + str(i)].value
                 eng_wav = gTTS(a, lang='ko')
                 eng_wav.save('kor' + str(i) + '.wav')
+                self.progress.setValue((int)(i/maxrow)*100)
+            print('success')
+
+class ThreadClass(QThread):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+
+    def run(self):
+        print('Thread')
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
