@@ -54,7 +54,6 @@ class CWidget(QWidget):
 
         #쓰레드 설정
         self.ttsThread= ThreadClass(parent=self)
-        self.ttsThread.send_file.connect(self.ttsThread.receive)
     def clickAdd(self):
         files, ext = QFileDialog.getOpenFileNames(self, "Open Movie", QDir.homePath())
 
