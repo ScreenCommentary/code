@@ -147,6 +147,9 @@
       </widget>
      </item>
      <item>
+      <widget class="QComboBox" name="cmb"/>
+     </item>
+     <item>
       <widget class="QTableWidget" name="list"/>
      </item>
     </layout>

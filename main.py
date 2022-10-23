@@ -1,5 +1,5 @@
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
-from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QMessageBox, QComboBox
 from PyQt5.QtCore import Qt, QUrl, QDir
 from PyQt5.QtGui import QPalette
 from PyQt5.uic import loadUi
@@ -17,6 +17,7 @@ QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 class CWidget(QWidget):
     def __init__(self):
         super().__init__()
+        currentPath=os.getcwd()
         loadUi('main.ui', self)
 
         # Multimedia Object
@@ -152,24 +153,24 @@ class CWidget(QWidget):
 
     def initTableWidget(self, id):###
         # 테이블 위젯 값 쓰기
-        self.table.clear()
+        self.list.clear()
         # select dataframe
         df = self.df_list[id];
         # table write
         col = len(df.keys())
-        self.table.setColumnCount(col)
-        self.table.setHorizontalHeaderLabels(df.keys())
+        self.list.setColumnCount(col)
+        self.list.setHorizontalHeaderLabels(df.keys())
 
         row = len(df.index)
-        self.table.setRowCount(row)
+        self.list.setRowCount(row)
         self.writeTableWidget(id, df, row, col)
 
     def writeTableWidget(self, id, df, row, col): ###
         for r in range(row):
             for c in range(col):
                 item = QTableWidgetItem(str(df.iloc[r][c]))
-                self.table.setItem(r, c, item)
-        self.table.resizeColumnsToContents()
+                self.list.setItem(r, c, item)
+        self.list.resizeColumnsToContents()
 
     def ToTTS(self, file): #tts 변환 부분
         if file is None:
