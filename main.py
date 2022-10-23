@@ -27,7 +27,7 @@ class CWidget(QWidget):
         pal.setColor(QPalette.Background, Qt.black)
         self.view.setAutoFillBackground(True);
         self.view.setPalette(pal)
-
+        self.df_list=[]
         # volume, slider
         self.vol.setRange(0, 100)
         self.vol.setValue(50)
@@ -63,6 +63,8 @@ class CWidget(QWidget):
         file_path, ext = QFileDialog.getOpenFileName(self, '파일 열기', os.getcwd(), 'excel file (*.xls *.xlsx)')
         if file_path:
             self.df_list = self.loadData(file_path)
+            for i in self.df_list:
+                self.cmb.addItem(i.name)
             file = file_path
             self.btn_push.setEnabled(True)  ## 엑셀파일 들어오면 버튼 클릭가능
             self.ToTTS(file)
