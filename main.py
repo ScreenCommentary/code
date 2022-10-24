@@ -13,6 +13,8 @@ from gtts import gTTS
 from openpyxl.reader.excel import load_workbook
 QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 
+#from EditAudio import *
+
 class CWidget(QWidget):
     def __init__(self):
         super().__init__()
