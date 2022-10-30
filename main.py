@@ -1,6 +1,6 @@
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
-from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QMessageBox, QComboBox
-from PyQt5.QtCore import Qt, QUrl, QDir, QThread
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
 from PyQt5.QtGui import QPalette
 from PyQt5.uic import loadUi
 from media import CMultiMedia
@@ -16,6 +16,7 @@ QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 #from EditAudio import *
 
 class CWidget(QWidget):
+    file_sender = pyqtSignal(object);
     def __init__(self):
         super().__init__()
         loadUi('main.ui', self)
@@ -55,7 +56,8 @@ class CWidget(QWidget):
         self.bar.sliderMoved.connect(self.barChanged)
 
         #쓰레드 설정
-        self.ttsThread= ThreadClass(parent=self)
+        self.thread= ThreadClass(parent=self)
+        self.file_sender.connect(self.thread.ToTTS2)
     def clickAdd(self):
         files, ext = QFileDialog.getOpenFileNames(self, "Open Movie", QDir.homePath())
 
@@ -173,9 +175,26 @@ class CWidget(QWidget):
                 self.list.setItem(r, c, item)
         self.list.resizeColumnsToContents()
 
+    @pyqtSlot()
     def ToTTS(self, file): #tts 변환 부분
 
-        self.ttsThread.start()
+        self.thread.start()
+        self.file_sender.emit(file)
+        self.progress.setValue()
+        print('finish')
+
+
+class ThreadClass(QThread):
+    file_receive = pyqtSignal(object)
+    progress= pyqtSignal(int)
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+        self._mutex = QMutex()
+    @pyqtSlot(object)
+    def ToTTS2(self,file):
+        self._mutex.lock()
+
         if file is None:
             self.btn_push.setEnabled(False)
         else:
@@ -184,20 +203,22 @@ class CWidget(QWidget):
             load_ws = load_wb['Sheet1']
             maxrow = load_ws.max_row
             # 셀 주소로 값 출력
+
             for i in range(2, maxrow + 1):
                 a = load_ws['A' + str(i)].value
                 eng_wav = gTTS(a, lang='ko')
                 eng_wav.save('kor' + str(i) + '.wav')
-                self.progress.setValue((int)(i/maxrow)*100)
-            print('success')
+                print(file)
+                self.progress.emit((int)(i/maxrow)*100)
 
-class ThreadClass(QThread):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.parent = parent
+
+        print('done')
+        self._mutex.unlock()
 
     def run(self):
-        print('Thread')
+        self._mutex.lock()
+        print('thread')
+        self._mutex.unlock()
 
 
 if __name__ == '__main__':
