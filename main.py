@@ -1,7 +1,7 @@
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-from PyQt5.QtGui import QPalette
+from PyQt5.QtGui import QPalette, QMovie
 from PyQt5.uic import loadUi
 from media import CMultiMedia
 import os
@@ -16,7 +16,7 @@ QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 #from EditAudio import *
 
 class CWidget(QWidget):
-    file_sender = pyqtSignal(object);
+    file_sender = pyqtSignal(object)
     def __init__(self):
         super().__init__()
         loadUi('main.ui', self)
@@ -27,13 +27,12 @@ class CWidget(QWidget):
         # video background color
         pal = QPalette()
         pal.setColor(QPalette.Background, Qt.black)
-        self.view.setAutoFillBackground(True);
+        self.view.setAutoFillBackground(True)
         self.view.setPalette(pal)
         self.df_list=[]
         # volume, slider
         self.vol.setRange(0, 100)
         self.vol.setValue(50)
-        self.progress.setValue(0)
         # play time
         self.duration = ''
 
@@ -175,22 +174,22 @@ class CWidget(QWidget):
                 self.list.setItem(r, c, item)
         self.list.resizeColumnsToContents()
 
-    @pyqtSlot()
+
     def ToTTS(self, file): #tts 변환 부분
 
         self.thread.start()
         self.file_sender.emit(file)
-        self.progress.setValue()
         print('finish')
 
 
-class ThreadClass(QThread):
+class ThreadClass(QThread,QWidget):
     file_receive = pyqtSignal(object)
-    progress= pyqtSignal(int)
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
         self._mutex = QMutex()
+
+
     @pyqtSlot(object)
     def ToTTS2(self,file):
         self._mutex.lock()
@@ -208,16 +207,11 @@ class ThreadClass(QThread):
                 a = load_ws['A' + str(i)].value
                 eng_wav = gTTS(a, lang='ko')
                 eng_wav.save('kor' + str(i) + '.wav')
-                print(file)
-                self.progress.emit((int)(i/maxrow)*100)
 
-
-        print('done')
         self._mutex.unlock()
 
     def run(self):
         self._mutex.lock()
-        print('thread')
         self._mutex.unlock()
 
 

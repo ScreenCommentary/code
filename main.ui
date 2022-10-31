@@ -134,13 +134,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QProgressBar" name="progress">
-       <property name="value">
-        <number>24</number>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QLabel" name="label">
        <property name="layoutDirection">
         <enum>Qt::LeftToRight</enum>
@@ -158,6 +151,19 @@
      </item>
      <item>
       <widget class="QTableWidget" name="list"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>TTS 목록</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListWidget" name="tts_list"/>
      </item>
     </layout>
    </item>
