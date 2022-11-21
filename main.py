@@ -224,7 +224,7 @@ class loading(QWidget, FROM_CLASS_Loading):
 
     def __init__(self, parent):
         super(loading, self).__init__(parent)
-        self.setupUi(self)
+        loadUi("load.ui")
         self.center()
         self.show()
 
