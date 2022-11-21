@@ -1,52 +1,21 @@
+# # python code 사용해서 mp4를 wav로 바꾼 파일은 계속 오류남
+# # Error message: Error while processing frame
+
+# # Python code to convert video to audio
+# import moviepy.editor as mp
+# # Insert Local Video File Path
+# clip = mp.VideoFileClip("mp4.mp4")
+# # Insert Local Audio File Path
+# clip.audio.write_audiofile("wav.wav",codec='pcm_s16le')
+
 from scipy.io import wavfile
 
-filename = '영상_자른거_wav.wav'
+filename = 'wav.wav'
 sample_rate, samples = wavfile.read(filename)
 print('sample rate : {}, samples.shape : {}'.format(sample_rate, samples.shape))
 
 from scipy import signal
 import numpy as np
-
-# def log_specgram(audio, sample_rate, window_size=20, step_size=10, eps=1e-10):
-#     # nperseg: Length of each segment
-#     # noverlap: Number of points to overlap between segments
-#     nperseg = int(round(window_size * sample_rate / 1e3))
-#     noverlap = int(round(step_size * sample_rate / 1e3))
-#     freqs, times, spec = signal.spectrogram(audio, fs=sample_rate,
-#                                             window='hann', nperseg=nperseg,
-#                                             noverlap=noverlap, detrend=False)
-#     return freqs, times, np.log(spec.T.astype(np.float32) + eps)
-
-# import matplotlib.pyplot as plt
-
-# freqs, times, spectrogram = log_specgram(samples, sample_rate)
-
-# fig = plt.figure(figsize=(14, 8))
-# ax1 = fig.add_subplot(211)
-# ax1.set_title('Raw wave of ' + filename)
-# ax1.set_ylabel('Amplitude')
-# ax1.plot(np.linspace(0, sample_rate/len(samples), sample_rate), samples)
-
-# ax2 = fig.add_subplot(212)
-# ax2.imshow(spectrogram.T, aspect='auto', origin='lower',
-#            extent=[times.min(), times.max(), freqs.min(), freqs.max()])
-# ax2.set_yticks(freqs[::16])
-# ax2.set_xticks(times[::16])
-# ax2.set_title('Spectrogram of ' + filename)
-# ax2.set_ylabel('Freqs in Hz')
-# ax2.set_xlabel('Seconds')
-
-# mean = np.mean(spectrogram, axis=0)
-# std = np.std(spectrogram, axis=0)
-# spectrogram = (spectrogram - mean) / std
-# spectrogram.shape
-
-# import IPython.display as ipd
-# ipd.Audio(samples, rate=sample_rate)
-
-# # 0.25 ~ 0.8125 * sample_rate(16000)
-# samples_cut = samples[4000:13000]
-# ipd.Audio(samples_cut, rate=sample_rate)
 
 import webrtcvad
 vad = webrtcvad.Vad()
@@ -76,6 +45,44 @@ def frame_generator(frame_duration_ms, audio, sample_rate):
 # 10, 20, or 30
 frame_duration_ms = 10 # ms
 frames = frame_generator(frame_duration_ms, samples, sample_rate)
+not_speech_index = []
 for i, frame in enumerate(frames):
     if not vad.is_speech(frame.bytes, sample_rate):
+        # non_speech라고 인식된 인덱스 출력 및 그 프레임의 timestamp 출력
+        # 소수점이 너무 길어져서 소수점 둘째자리에서 올림
         print(i, end=' ')
+        print(round(frame.timestamp,2))
+        # 따로 not_speech_index에 저장해놓음
+        not_speech_index.append(i)
+
+# queue 사용해서 연속된 (따로 길이를 지정하지는 않음) 
+# non_speech_index에서 연속이 시작하는 인덱스를 저장함
+queue = not_speech_index
+packet = []
+tmp = []
+v = queue.pop(0)
+tmp.append(v)
+print(v)
+
+while(len(queue)>0):
+	vv = queue.pop(0)
+	print(vv)
+	if v+1 == vv:
+		tmp.append(vv)
+		v = vv
+	else:
+		packet.append(tmp)
+		tmp = []
+		tmp.append(vv)
+		v = vv
+
+packet.append(tmp)
+start=[]
+for i in enumerate(packet):
+        start.append(i[1][0])
+print(start)
+
+# 연속된 인덱스의 timestamp를 가져옴
+for i, times in enumerate(start):
+    # 1분짜리 영상이 30까지 있는걸로 봐서 2배를 해줘서 시간을 맞춤
+    print(round(frames[times].timestamp*2,2))
