@@ -208,7 +208,7 @@ class ThreadClass(QThread,QWidget):
                 a = load_ws['A' + str(i)].value
                 eng_wav = gTTS(a, lang='ko')
                 eng_wav.save('kor' + str(i) + '.wav')
-            self.loading
+            #self.loading
             #self.loading.deleteLater()
 
 
