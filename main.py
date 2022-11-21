@@ -15,13 +15,12 @@ from openpyxl.reader.excel import load_workbook
 QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 
 #from EditAudio import *
-FROM_CLASS_Loading = uic.loadUiType("load.ui")[0]
 class CWidget(QWidget):
     file_sender = pyqtSignal(object)
     def __init__(self):
         super().__init__()
         loadUi('main.ui', self)
-
+        self.progressBar.setValue(0)
         # Multimedia Object
         self.mp = CMultiMedia(self, self.view)
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
@@ -31,6 +30,7 @@ class CWidget(QWidget):
         self.view.setAutoFillBackground(True)
         self.view.setPalette(pal)
         self.df_list=[]
+
         # volume, slider
         self.vol.setRange(0, 100)
         self.vol.setValue(50)
@@ -177,14 +177,22 @@ class CWidget(QWidget):
 
 
     def ToTTS(self, file): #tts 변환 부분
+        load_wb = load_workbook(file, data_only=True)
+        # 시트 이름으로 불러오기
+        load_ws = load_wb['Sheet1']
+        maxrow = load_ws.max_row
+        self.progressBar.setMaximum(maxrow-1)
 
+        self.thread.countChanged.connect(self.onCountChanged)
         self.thread.start()
         self.file_sender.emit(file)
-        print('finish')
+    def onCountChanged(self, value):
+        self.progressBar.setValue(value)
 
 
 class ThreadClass(QThread,QWidget):
     file_receive = pyqtSignal(object)
+    countChanged = pyqtSignal(int)
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
@@ -194,7 +202,8 @@ class ThreadClass(QThread,QWidget):
     @pyqtSlot(object)
     def ToTTS2(self,file):
         self._mutex.lock()
-
+        count = 0
+        self.countChanged.emit(count)
         if file is None:
             self.btn_push.setEnabled(False)
         else:
@@ -202,14 +211,14 @@ class ThreadClass(QThread,QWidget):
             # 시트 이름으로 불러오기
             load_ws = load_wb['Sheet1']
             maxrow = load_ws.max_row
+
             # 셀 주소로 값 출력
-            #self.loading = loading(self)
             for i in range(2, maxrow + 1):
+                count+=1
                 a = load_ws['A' + str(i)].value
                 eng_wav = gTTS(a, lang='ko')
                 eng_wav.save('kor' + str(i) + '.wav')
-            #self.loading
-            #self.loading.deleteLater()
+                self.countChanged.emit(count)
 
 
         self._mutex.unlock()
@@ -219,30 +228,6 @@ class ThreadClass(QThread,QWidget):
         self._mutex.unlock()
 
 
-
-class loading(QWidget, FROM_CLASS_Loading):
-
-    def __init__(self, parent):
-        super(loading, self).__init__(parent)
-        loadUi("load.ui")
-        self.center()
-        self.show()
-
-        # 동적 이미지 추가
-        self.movie = QMovie('loading.gif', QByteArray(), self)
-        self.movie.setCacheMode(QMovie.CacheAll)
-        # QLabel에 동적 이미지 삽입
-        self.label.setMovie(self.movie)
-        self.movie.start()
-        # 윈도우 해더 숨기기
-        self.setWindowFlags(Qt.FramelessWindowHint)
-
-    # 위젯 정중앙 위치
-    def center(self):
-        size = self.size()
-        ph = self.parent().geometry().height()
-        pw = self.parent().geometry().width()
-        self.move(int(pw / 2 - size.width() / 2), int(ph / 2 - size.height() / 2))
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     w = CWidget()
