@@ -30,6 +30,7 @@ class CWidget(QWidget):
         self.view.setAutoFillBackground(True)
         self.view.setPalette(pal)
         self.df_list=[]
+        self.playlist=[]
 
         # volume, slider
         self.vol.setRange(0, 100)
@@ -188,10 +189,25 @@ class CWidget(QWidget):
         self.thread.countChanged.connect(self.onCountChanged)
         self.thread.start()
         self.file_sender.emit(file)
+        path_dir = "../TTS"
+        fList = os.listdir(path_dir)
+        cnt=len(fList[0])
+        row = self.tts_list.rowCount()
+        print(row,cnt)
+        self.tts_list.setRowCount(row)
+        for i in range(row, row+cnt):
+            self.tts_list.setItem(i, 0, QTableWidgetItem(fList[0][i-row]))
+
+        self.createPlaylist()
+
     def onCountChanged(self, value):
         self.progressBar.setValue(value)
     def playTTS(self):
         print('a')
+    def createPlaylist(self):
+        self.playlist.clear()
+        for i in range(self.tts_list.rowCount()):
+            self.playlist.append(self.tts_list.item(i).text())
 
 class ThreadClass(QThread,QWidget):
     file_receive = pyqtSignal(object)
