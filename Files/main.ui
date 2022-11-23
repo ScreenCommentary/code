@@ -170,7 +170,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QListWidget" name="tts_list"/>
+      <widget class="QTableWidget" name="tts_list"/>
      </item>
     </layout>
    </item>

@@ -54,6 +54,8 @@ class CWidget(QWidget):
         self.list.itemDoubleClicked.connect(self.dbClickList)
         self.vol.valueChanged.connect(self.volumeChanged)
         self.bar.sliderMoved.connect(self.barChanged)
+        # tts list
+        self.tts_list.itemDoubleClicked.connect(self.playTTS)
 
         #쓰레드 설정
         self.thread= ThreadClass(parent=self)
@@ -188,7 +190,8 @@ class CWidget(QWidget):
         self.file_sender.emit(file)
     def onCountChanged(self, value):
         self.progressBar.setValue(value)
-
+    def playTTS(self):
+        print('a')
 
 class ThreadClass(QThread,QWidget):
     file_receive = pyqtSignal(object)
