@@ -5,6 +5,7 @@ from PyQt5.QtGui import QPalette, QMovie
 from PyQt5.uic import loadUi
 from PyQt5 import uic
 from media import CMultiMedia
+from player import *
 import os
 import sys
 import datetime
@@ -23,6 +24,7 @@ class CWidget(QWidget):
         self.progressBar.setValue(0)
         # Multimedia Object
         self.mp = CMultiMedia(self, self.view)
+        self.player = CPlayer(self)
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         # video background color
         pal = QPalette()
@@ -31,6 +33,8 @@ class CWidget(QWidget):
         self.view.setPalette(pal)
         self.df_list=[]
         self.playlist=[]
+        self.selectedList = [0]
+        self.playOption = QMediaPlaylist.Sequential
 
         # volume, slider
         self.vol.setRange(0, 100)
@@ -53,11 +57,20 @@ class CWidget(QWidget):
 
         #self.section_list.itemDoubleClicked.connect(self)
         self.list.itemDoubleClicked.connect(self.dbClickList)
+        self.list.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.vol.valueChanged.connect(self.volumeChanged)
         self.bar.sliderMoved.connect(self.barChanged)
         # tts list
-        self.tts_list.itemDoubleClicked.connect(self.playTTS)
-
+        self.tts_list.doubleClicked.connect(self.playTTS)
+        path_dir = "../TTS"
+        fList = os.listdir(path_dir)
+        cnt=len(fList[0])
+        row = len(fList)
+        self.tts_list.setRowCount(row)
+        self.tts_list.setColumnCount(1)
+        for i in range(0, row):
+            self.tts_list.setItem(i, 0, QTableWidgetItem(fList[i]))
+        self.createPlaylist()
         #쓰레드 설정
         self.thread= ThreadClass(parent=self)
         self.file_sender.connect(self.thread.ToTTS2)
@@ -185,29 +198,20 @@ class CWidget(QWidget):
         load_ws = load_wb['Sheet1']
         maxrow = load_ws.max_row
         self.progressBar.setMaximum(maxrow-1)
-
         self.thread.countChanged.connect(self.onCountChanged)
         self.thread.start()
         self.file_sender.emit(file)
-        path_dir = "../TTS"
-        fList = os.listdir(path_dir)
-        cnt=len(fList[0])
-        row = self.tts_list.rowCount()
-        print(row,cnt)
-        self.tts_list.setRowCount(row)
-        for i in range(row, row+cnt):
-            self.tts_list.setItem(i, 0, QTableWidgetItem(fList[0][i-row]))
 
-        self.createPlaylist()
 
     def onCountChanged(self, value):
         self.progressBar.setValue(value)
     def playTTS(self):
-        print('a')
+        if self.tts_list.rowCount() > 0:
+            self.player.play(self.playlist, self.selectedList[0], self.playOption)
     def createPlaylist(self):
         self.playlist.clear()
         for i in range(self.tts_list.rowCount()):
-            self.playlist.append(self.tts_list.item(i).text())
+            self.playlist.append(self.tts_list.item(i,0).text())
 
 class ThreadClass(QThread,QWidget):
     file_receive = pyqtSignal(object)
