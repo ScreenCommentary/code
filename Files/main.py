@@ -1,5 +1,5 @@
 import glob
-
+import natsort
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -65,7 +65,7 @@ class CWidget(QWidget):
         self.bar.sliderMoved.connect(self.barChanged)
         # tts list
         self.tts_list.doubleClicked.connect(self.playTTS)
-
+        self.tts_list.itemSelectionChanged.connect(self.tableChanged)
         #쓰레드 설정
         self.thread= ThreadClass(parent=self)
         self.file_sender.connect(self.thread.ToTTS2)
@@ -201,6 +201,7 @@ class CWidget(QWidget):
         print(path_dir)
         fList = glob.glob(path_dir)
         fList = [file for file in fList if file.endswith('.wav')]
+        fList = natsort.natsorted(fList)
         print(fList)
         row = len(fList)
         self.tts_list.setRowCount(row)
@@ -217,6 +218,16 @@ class CWidget(QWidget):
         self.playlist.clear()
         for i in range(self.tts_list.rowCount()):
             self.playlist.append(self.tts_list.item(i, 0).text())
+    def tableChanged(self):
+        self.selectedList.clear()
+        for item in self.tts_list.selectedIndexes():
+            self.selectedList.append(item.row())
+
+        self.selectedList = list(set(self.selectedList))
+
+        if self.tts_list.rowCount() != 0 and len(self.selectedList) == 0:
+            self.selectedList.append(0)
+        # print(self.selectedList)
 
 class ThreadClass(QThread,QWidget):
     file_receive = pyqtSignal(object)
