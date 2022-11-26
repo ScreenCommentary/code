@@ -58,7 +58,7 @@ class CWidget(QWidget):
         #self.btn_pull.clicked.connect(self)
 
         #self.section_list.itemDoubleClicked.connect(self)
-        self.list.itemDoubleClicked.connect(self.dbClickList)
+        #self.list.itemDoubleClicked.connect(self.dbClickList)
         self.list.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tts_list.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.vol.valueChanged.connect(self.volumeChanged)
