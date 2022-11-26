@@ -4,16 +4,16 @@ import librosa # librosa==0.9.1
 import webrtcvad # webrtcvad==2.0.10
 import numpy as np
 
-# from os import path
-# from pydub import AudioSegment
+from os import path
+from pydub import AudioSegment
 
-# # files
-# src = "prototype.mp4"
-# dst = "prototype_test.wav"
+# files
+src = "prototype.mp4"
+dst = "prototype_test.wav"
 
-# # convert mp4 to wav
-# sound = AudioSegment.from_file(src,format="mp4")
-# sound.export(dst, format="wav")
+# convert mp4 to wav
+sound = AudioSegment.from_file(src,format="mp4")
+sound.export(dst, format="wav")
 
 # load data
 file_path = "prototype.wav"
@@ -33,30 +33,6 @@ if y.dtype.kind == 'f':
 
 # define webrtcvad VAD
 vad = webrtcvad.Vad(3) # set aggressiveness from 0 to 3
-# window_duration = 0.03 # duration in seconds
-# samples_per_window = int(window_duration * sr + 0.5)
-# bytes_per_sample = 2 # for int16
-
-# # Start classifying chunks of samples
-# # var to hold segment wise report
-# segments = []
-# # iterate over the audio samples
-# for i, start in enumerate(np.arange(0, len(y), samples_per_window)):
-#     stop = min(start + samples_per_window, len(y))
-#     loc_raw_sample = raw_samples[start * bytes_per_sample: stop * bytes_per_sample]
-#     try:
-#         if(not vad.is_speech(loc_raw_sample, sample_rate = sr)):
-#             is_speech = vad.is_speech(loc_raw_sample, 
-#                                 sample_rate = sr)
-#             segments.append(dict(
-#                     start = start,
-#                     stop = stop,
-#                     is_speech = is_speech))
-#     except Exception as e:
-#         print(f"Failed for step {i}, reason: {e}")
-
-# print(segments)
-# print(len(np.arange(0, len(y), samples_per_window)))
 
 class Frame(object):
     """Represents a "frame" of audio data."""
@@ -91,6 +67,9 @@ for i, frame in enumerate(frames):
         # 따로 not_speech_index에 저장해놓음
         not_speech_index.append(i)
 
+#################################################
+# non_speech_index을 timestamp로 어떻게 나타낼지??
+##################################################
 # queue 사용해서 연속된 (따로 길이를 지정하지는 않음) 
 # non_speech_index에서 연속이 시작하는 인덱스를 저장함
 queue = not_speech_index
