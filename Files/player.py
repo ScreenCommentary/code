@@ -9,9 +9,6 @@ class CPlayer:
         self.parent = parent
 
         self.player = QMediaPlayer()
-        self.player.currentMediaChanged.connect(self.mediaChanged)
-        # self.player.durationChanged.connect(self.durationChanged)
-        # self.player.positionChanged.connect(self.positionChanged)
 
         self.playlist = QMediaPlaylist()
 
@@ -21,13 +18,15 @@ class CPlayer:
         else:
             self.createPlaylist(playlists, startRow, option)
             self.player.setPlaylist(self.playlist)
+            print(2)
             self.playlist.setCurrentIndex(startRow)
             self.player.play()
 
     def createPlaylist(self, playlists, startRow=0, option=QMediaPlaylist.Sequential):
         self.playlist.clear()
         for path in playlists:
-            url = QUrl.fromLocalFile('../TTS' + path)
+            url = QUrl.fromLocalFile(path)
+            print(url)
             self.playlist.addMedia(QMediaContent(url))
         self.playlist.setPlaybackMode(option)
 

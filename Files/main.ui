@@ -157,7 +157,11 @@
       <widget class="QComboBox" name="cmb"/>
      </item>
      <item>
-      <widget class="QTableWidget" name="list"/>
+      <widget class="QTableWidget" name="list">
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QLabel" name="label_3">
@@ -170,7 +174,17 @@
       </widget>
      </item>
      <item>
-      <widget class="QTableWidget" name="tts_list"/>
+      <widget class="QTableWidget" name="tts_list">
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="dragDropMode">
+        <enum>QAbstractItemView::DragOnly</enum>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectItems</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
