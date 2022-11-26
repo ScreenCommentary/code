@@ -1,21 +1,22 @@
-# # python code 사용해서 mp4를 wav로 바꾼 파일은 계속 오류남
-# # Error message: Error while processing frame
-
-# # Python code to convert video to audio
-# import moviepy.editor as mp
-# # Insert Local Video File Path
-# clip = mp.VideoFileClip("mp4.mp4")
-# # Insert Local Audio File Path
-# clip.audio.write_audiofile("wav.wav",codec='pcm_s16le')
-
 # import
 import struct 
 import librosa # librosa==0.9.1
 import webrtcvad # webrtcvad==2.0.10
 import numpy as np
 
+# from os import path
+# from pydub import AudioSegment
+
+# # files
+# src = "prototype.mp4"
+# dst = "prototype_test.wav"
+
+# # convert mp4 to wav
+# sound = AudioSegment.from_file(src,format="mp4")
+# sound.export(dst, format="wav")
+
 # load data
-file_path = 'prototype.wav'
+file_path = "prototype.wav"
 
 # load wav file (librosa)
 y, sr = librosa.load(file_path, sr=16000)
@@ -27,62 +28,107 @@ if y.dtype.kind == 'f':
     y[y > 32767] = 32767
     y[y < -32768] = -32768
 
-# create raw sample in bit
-raw_samples = struct.pack("%dh" % len(y), *y)
+# # create raw sample in bit
+# raw_samples = struct.pack("%dh" % len(y), *y)
 
 # define webrtcvad VAD
 vad = webrtcvad.Vad(3) # set aggressiveness from 0 to 3
-window_duration = 0.03 # duration in seconds
-samples_per_window = int(window_duration * sr + 0.5)
-bytes_per_sample = 2 # for int16
+# window_duration = 0.03 # duration in seconds
+# samples_per_window = int(window_duration * sr + 0.5)
+# bytes_per_sample = 2 # for int16
 
-# Start classifying chunks of samples
-# var to hold segment wise report
-segments = []
-# iterate over the audio samples
-for i, start in enumerate(np.arange(0, len(y), samples_per_window)):
-    stop = min(start + samples_per_window, len(y))
-    loc_raw_sample = raw_samples[start * bytes_per_sample: stop * bytes_per_sample]
-    try:
-        if(not vad.is_speech(loc_raw_sample, sample_rate = sr)):
-            is_speech = vad.is_speech(loc_raw_sample, 
-                                sample_rate = sr)
-            segments.append(dict(
-                    start = start,
-                    stop = stop,
-                    is_speech = is_speech))
-    except Exception as e:
-        print(f"Failed for step {i}, reason: {e}")
+# # Start classifying chunks of samples
+# # var to hold segment wise report
+# segments = []
+# # iterate over the audio samples
+# for i, start in enumerate(np.arange(0, len(y), samples_per_window)):
+#     stop = min(start + samples_per_window, len(y))
+#     loc_raw_sample = raw_samples[start * bytes_per_sample: stop * bytes_per_sample]
+#     try:
+#         if(not vad.is_speech(loc_raw_sample, sample_rate = sr)):
+#             is_speech = vad.is_speech(loc_raw_sample, 
+#                                 sample_rate = sr)
+#             segments.append(dict(
+#                     start = start,
+#                     stop = stop,
+#                     is_speech = is_speech))
+#     except Exception as e:
+#         print(f"Failed for step {i}, reason: {e}")
 
-print(segments)
-# # queue 사용해서 연속된 (따로 길이를 지정하지는 않음) 
-# # non_speech_index에서 연속이 시작하는 인덱스를 저장함
-# queue = not_speech_index
-# packet = []
-# tmp = []
-# v = queue.pop(0)
-# tmp.append(v)
+# print(segments)
+# print(len(np.arange(0, len(y), samples_per_window)))
+
+class Frame(object):
+    """Represents a "frame" of audio data."""
+    def __init__(self, bytes, timestamp, duration):
+        self.bytes = bytes
+        self.timestamp = timestamp
+        self.duration = duration
+
+def frame_generator(frame_duration_ms, audio, sample_rate):
+    frames = []
+    n = int(sample_rate * (frame_duration_ms / 1000.0) * 2)
+    offset = 0
+    timestamp = 0.0
+    duration = (float(n) / sample_rate) / 2.0
+    while offset + n < len(audio):
+        frames.append(Frame(audio[offset:offset + n], timestamp, duration))
+        timestamp += duration
+        offset += n
+    
+    return frames
+
+# 10, 20, or 30
+frame_duration_ms = 10 # ms
+frames = frame_generator(frame_duration_ms, y, sr)
+not_speech_index = []
+for i, frame in enumerate(frames):
+    if not vad.is_speech(frame.bytes, sr):
+        # non_speech라고 인식된 인덱스 출력 및 그 프레임의 timestamp 출력
+        # 소수점이 너무 길어져서 소수점 둘째자리에서 올림
+        print(i, end=' ')
+        print(round(frame.timestamp,2)*2)
+        # 따로 not_speech_index에 저장해놓음
+        not_speech_index.append(i)
+
+# queue 사용해서 연속된 (따로 길이를 지정하지는 않음) 
+# non_speech_index에서 연속이 시작하는 인덱스를 저장함
+queue = not_speech_index
+packet = []
+tmp = []
+v = queue.pop(0)
+tmp.append(v)
 # print(v)
 
-# while(len(queue)>0):
-# 	vv = queue.pop(0)
-# 	print(vv)
-# 	if v+1 == vv:
-# 		tmp.append(vv)
-# 		v = vv
-# 	else:
-# 		packet.append(tmp)
-# 		tmp = []
-# 		tmp.append(vv)
-# 		v = vv
+while(len(queue)>0):
+	vv = queue.pop(0)
+	print(vv)
+	if v+1 == vv:
+		tmp.append(vv)
+		v = vv
+	else:
+		packet.append(tmp)
+		tmp = []
+		tmp.append(vv)
+		v = vv
+packet.append(tmp)
 
-# packet.append(tmp)
-# start=[]
-# for i in enumerate(packet):
-#         start.append(i[1][0])
-# print(start)
+#10개이상 연속된 non_speech_index (0.1초)
+end=[]
+for i, con in enumerate(packet):
+    if(len(packet[i])>9):
+        end.append(packet[i])
+for i, con in enumerate(end):
+    print(con,len(con)*0.02)
+start=[]
+start_len=[]
+for i in enumerate(end):
+        start.append(i[1][0])
+        start_len.append(len(i[1]))
+print(start)
 
 # # 연속된 인덱스의 timestamp를 가져옴
-# for i, times in enumerate(start):
-#     # 1분짜리 영상이 30까지 있는걸로 봐서 2배를 해줘서 시간을 맞춤
-#     print(round(frames[times].timestamp*2,2))
+for i, times in enumerate(start):
+    # 1분짜리 영상이 30까지 있는걸로 봐서 2배를 해줘서 시간을 맞춤
+    print("non_speech_section start timestamp:",round(frames[times].timestamp*2/60,2))
+    print("length:",round(start_len[i]*0.02,2))
