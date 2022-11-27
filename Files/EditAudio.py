@@ -17,7 +17,12 @@ class EditAudio:
     def getOriginalAudio(videoclip) :
         return videoclip.audio
 
-    ##  언제 불러야 하는지?
+    '''
+    function name : getTTS
+    do : make a list to save TTS file names, list length is count of TTS files
+    param :
+        len - TTS file list coun
+    '''
     def getTTS():
         TTS_audio = []
         for i in range(2, len + 2):
@@ -27,14 +32,30 @@ class EditAudio:
     def getTimestamp(timestamp):
         return timestamp
 
-    ## param : original audio file,  tts audio file list, time list to insert TTS,
+    '''
+    function name : setAudio
+    do : edit audio file with TTS list
+    param :
+        audio - original audio file
+        tts - tts file list (getTTS())
+        timestamp - time list to insert TTS (getTimestamp())
+    * test needed
+    '''
     def setAudio(audio, tts, timestamp):
         for i, j in [timestamp, len(timestamp)]:
             #result = CompositeAudioClip([audio.set_start(i), tts]) # 오디오 합성하기
-            audioclip = CompositeAudioClip([tts[j].set_start(i), audioclip]) # 오디오 합성하기 
-        return audioclip
+            audio = CompositeAudioClip([tts[j].set_start(i), audio]) # 오디오 합성하기 
+        return audio
    #setAudio(getOriginalAudio(), getTTS(), getTimestamp())
-
+   
+    '''
+    function name : setVideo
+    do : make final video with edited audio
+    param :
+        name - video name for making
+        audio - edited audio file (setAudio())
+        video - original video to composite
+    '''
     def setVideo(name, audio, video):
         video.audio = audio
         video.write_videofile(name + ".mp4")
