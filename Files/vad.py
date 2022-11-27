@@ -1,6 +1,6 @@
 from scipy.io import wavfile
 
-filename = '영상_자른거_wav.wav'
+filename = 'prototype.wav'
 sample_rate, samples = wavfile.read(filename)
 print('sample rate : {}, samples.shape : {}'.format(sample_rate, samples.shape))
 
@@ -49,16 +49,20 @@ import numpy as np
 # ipd.Audio(samples_cut, rate=sample_rate)
 
 import webrtcvad
+
 vad = webrtcvad.Vad()
 # 1~3 까지 설정 가능, 높을수록 aggressive
 vad.set_mode(3)
 
+
 class Frame(object):
     """Represents a "frame" of audio data."""
+
     def __init__(self, bytes, timestamp, duration):
         self.bytes = bytes
         self.timestamp = timestamp
         self.duration = duration
+
 
 def frame_generator(frame_duration_ms, audio, sample_rate):
     frames = []
@@ -70,11 +74,12 @@ def frame_generator(frame_duration_ms, audio, sample_rate):
         frames.append(Frame(audio[offset:offset + n], timestamp, duration))
         timestamp += duration
         offset += n
-    
+
     return frames
 
+
 # 10, 20, or 30
-frame_duration_ms = 10 # ms
+frame_duration_ms = 10  # ms
 frames = frame_generator(frame_duration_ms, samples, sample_rate)
 for i, frame in enumerate(frames):
     if not vad.is_speech(frame.bytes, sample_rate):
