@@ -72,7 +72,7 @@ class CWidget(QWidget):
         self.thread= ThreadClass(parent=self)
         self.file_sender.connect(self.thread.ToTTS2)
     def clickAdd(self):
-        files, ext = QFileDialog.getOpenFileNames(self, "Open Movie", QDir.homePath())
+        files, ext = QFileDialog.getOpenFileNames(self, "Open Movie", '', 'Video (*.mp4 *.mpg *.mpeg *.avi *.wma *.mka)')
 
         if files != '':
             self.mp.addMedia(files)
