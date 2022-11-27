@@ -24,6 +24,7 @@ class CWidget(QWidget):
         super().__init__()
         loadUi('main.ui', self)
         self.progressBar.setValue(0)
+        self.movie_progress.setValue(0)
         # Multimedia Object
         self.mp = CMultiMedia(self, self.view)
         self.player = CPlayer(self)
@@ -230,7 +231,6 @@ class CWidget(QWidget):
                     QMessageBox.Yes|QMessageBox.No)
         #remove TTS file when program is off
         path_dir = "../TTS/*"
-        print(path_dir)
         fList = glob.glob(path_dir)
         fList = [file for file in fList if file.endswith('.wav')]
         fList = natsort.natsorted(fList)
