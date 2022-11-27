@@ -77,6 +77,13 @@ class CWidget(QWidget):
         if files != '':
             self.mp.addMedia(files)
     def clickAddExcel(self):
+        path_dir = "../TTS/*"
+        fList = glob.glob(path_dir)
+        fList = [file for file in fList if file.endswith('.wav')]
+        fList = natsort.natsorted(fList)
+        row = len(fList)
+        for i in fList:
+            os.remove(i)
         file_path, ext = QFileDialog.getOpenFileName(self, '파일 열기', os.getcwd(), 'excel file (*.xls *.xlsx)')
         if file_path:
             self.df_list = self.loadData(file_path)
