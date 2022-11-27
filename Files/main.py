@@ -23,6 +23,7 @@ class CWidget(QWidget):
     def __init__(self):
         super().__init__()
         loadUi('main.ui', self)
+        self.setWindowTitle("Screen Commentary Video Production Program")
         self.progressBar.setValue(0)
         self.movie_progress.setValue(0)
         # Multimedia Object
