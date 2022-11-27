@@ -9,6 +9,8 @@ class CPlayer:
         self.parent = parent
 
         self.player = QMediaPlayer()
+        # self.player.durationChanged.connect(self.durationChanged)
+        # self.player.positionChanged.connect(self.positionChanged)
 
         self.playlist = QMediaPlaylist()
 
@@ -18,14 +20,12 @@ class CPlayer:
         else:
             self.createPlaylist(playlists, startRow, option)
             self.player.setPlaylist(self.playlist)
-            print(2)
             self.playlist.setCurrentIndex(startRow)
             self.player.play()
 
     def createPlaylist(self, playlists, startRow, option=QMediaPlaylist.Sequential):
         self.playlist.clear()
         url = QUrl.fromLocalFile(playlists[startRow])
-        print(url)
         self.playlist.addMedia(QMediaContent(url))
         self.playlist.setPlaybackMode(option)
 
@@ -35,6 +35,4 @@ class CPlayer:
     def upateVolume(self, vol):
         self.player.setVolume(vol)
 
-    def mediaChanged(self, e):
-        self.parent.updateMediaChanged(self.playlist.currentIndex())
 

@@ -198,11 +198,9 @@ class CWidget(QWidget):
         self.file_sender.emit(file)
         #TTS fileList
         path_dir = "../TTS/*"
-        print(path_dir)
         fList = glob.glob(path_dir)
         fList = [file for file in fList if file.endswith('.wav')]
         fList = natsort.natsorted(fList)
-        print(fList)
         row = len(fList)
         self.tts_list.setRowCount(row)
         self.tts_list.setColumnCount(1)
@@ -227,7 +225,24 @@ class CWidget(QWidget):
 
         if self.tts_list.rowCount() != 0 and len(self.selectedList) == 0:
             self.selectedList.append(0)
-        # print(self.selectedList)
+    def closeEvent(self, QCloseEvent):
+        re = QMessageBox.question(self, "종료 확인", "종료 하시겠습니까?",
+                    QMessageBox.Yes|QMessageBox.No)
+        #remove TTS file when program is off
+        path_dir = "../TTS/*"
+        print(path_dir)
+        fList = glob.glob(path_dir)
+        fList = [file for file in fList if file.endswith('.wav')]
+        fList = natsort.natsorted(fList)
+        row = len(fList)
+        for i in fList:
+            os.remove(i)
+
+        if re == QMessageBox.Yes:
+            QCloseEvent.accept()
+        else:
+            QCloseEvent.ignore()
+
 
 class ThreadClass(QThread,QWidget):
     file_receive = pyqtSignal(object)
