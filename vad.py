@@ -1,5 +1,4 @@
 # import
-import struct 
 import librosa # librosa==0.9.1
 import webrtcvad # webrtcvad==2.0.10
 import numpy as np
@@ -27,9 +26,6 @@ if y.dtype.kind == 'f':
     # bound
     y[y > 32767] = 32767
     y[y < -32768] = -32768
-
-# # create raw sample in bit
-# raw_samples = struct.pack("%dh" % len(y), *y)
 
 # define webrtcvad VAD
 vad = webrtcvad.Vad(3) # set aggressiveness from 0 to 3
@@ -67,9 +63,6 @@ for i, frame in enumerate(frames):
         # 따로 not_speech_index에 저장해놓음
         not_speech_index.append(i)
 
-#################################################
-# non_speech_index을 timestamp로 어떻게 나타낼지??
-##################################################
 # queue 사용해서 연속된 (따로 길이를 지정하지는 않음) 
 # non_speech_index에서 연속이 시작하는 인덱스를 저장함
 queue = not_speech_index
@@ -109,5 +102,5 @@ print(start)
 # # 연속된 인덱스의 timestamp를 가져옴
 for i, times in enumerate(start):
     # 1분짜리 영상이 30까지 있는걸로 봐서 2배를 해줘서 시간을 맞춤
-    print("non_speech_section start timestamp:",round(frames[times].timestamp*2/60,2))
-    print("length:",round(start_len[i]*0.02,2))
+    print("non_speech_section start timestamp:",round((frames[times].timestamp*2),3))
+    print("length:",round(start_len[i]*0.01,10))
