@@ -3,19 +3,19 @@ import librosa # librosa==0.9.1
 import webrtcvad # webrtcvad==2.0.10
 import numpy as np
 
-from os import path
-from pydub import AudioSegment
+# from os import path
+# from pydub import AudioSegment
 
-# files
-src = "prototype.mp4"
-dst = "prototype_test.wav"
+# # files
+# src = "prototype.mp4"
+# dst = "prototype_test.wav"
 
-# convert mp4 to wav
-sound = AudioSegment.from_file(src,format="mp4")
-sound.export(dst, format="wav")
+# # convert mp4 to wav
+# sound = AudioSegment.from_file(src,format="mp4")
+# sound.export(dst, format="wav")
 
 # load data
-file_path = "prototype.wav"
+file_path = "mp4.wav"
 
 # load wav file (librosa)
 y, sr = librosa.load(file_path, sr=16000)
@@ -51,7 +51,7 @@ def frame_generator(frame_duration_ms, audio, sample_rate):
     return frames
 
 # 10, 20, or 30
-frame_duration_ms = 10 # ms
+frame_duration_ms = 20 # ms
 frames = frame_generator(frame_duration_ms, y, sr)
 not_speech_index = []
 for i, frame in enumerate(frames):
@@ -62,6 +62,9 @@ for i, frame in enumerate(frames):
         print(round(frame.timestamp,2)*2)
         # 따로 not_speech_index에 저장해놓음
         not_speech_index.append(i)
+
+# for i, times in enumerate(not_speech_index):
+#     print(round((frames[times].timestamp*2),3))
 
 # queue 사용해서 연속된 (따로 길이를 지정하지는 않음) 
 # non_speech_index에서 연속이 시작하는 인덱스를 저장함
@@ -102,5 +105,7 @@ print(start)
 # # 연속된 인덱스의 timestamp를 가져옴
 for i, times in enumerate(start):
     # 1분짜리 영상이 30까지 있는걸로 봐서 2배를 해줘서 시간을 맞춤
-    print("non_speech_section start timestamp:",round((frames[times].timestamp*2),3))
-    print("length:",round(start_len[i]*0.01,10))
+    # 비음성 구간이 0.55초보다 길때 출력하는 것으로 했을때 어느정도 비슷한 구간을 얻음
+    if(round(start_len[i]*0.02,10)>0.55):
+        print("non_speech_section start timestamp:",round((frames[times].timestamp*2),3))
+        print("length:",round(start_len[i]*0.02,10))
