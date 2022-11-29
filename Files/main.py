@@ -56,6 +56,8 @@ class CWidget(QWidget):
         self.btn_prev.clicked.connect(self.clickPrev)
         self.btn_push.clicked.connect(self.ToTTS)
         self.btn_push.setEnabled(False)
+        #영상 제작 버튼
+        self.btn_make_movie.clicked.connect(self.makeMoive)
         #self.btn_push.clicked.connect(self)
         #self.btn_pull.clicked.connect(self)
 
@@ -250,6 +252,8 @@ class CWidget(QWidget):
             QCloseEvent.accept()
         else:
             QCloseEvent.ignore()
+    def makeMoive(self):
+    #영상 제작 버튼 내용 삽입
 
 
 class ThreadClass(QThread,QWidget):
