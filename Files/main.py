@@ -252,8 +252,10 @@ class CWidget(QWidget):
             QCloseEvent.accept()
         else:
             QCloseEvent.ignore()
+
+    # 영상 제작 버튼 내용 삽입
     def makeMoive(self):
-    #영상 제작 버튼 내용 삽입
+        print('1')
 
 
 class ThreadClass(QThread,QWidget):
