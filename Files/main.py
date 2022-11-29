@@ -54,17 +54,15 @@ class CWidget(QWidget):
         self.btn_pause.clicked.connect(self.clickPause)
         self.btn_forward.clicked.connect(self.clickForward)
         self.btn_prev.clicked.connect(self.clickPrev)
-        self.btn_push.clicked.connect(self.ToTTS)
-        self.btn_push.setEnabled(False)
         #영상 제작 버튼
-        self.btn_make_movie.clicked.connect(self.makeMoive)
-        #self.btn_push.clicked.connect(self)
-        #self.btn_pull.clicked.connect(self)
+        self.btn_makemovie.clicked.connect(self.makeMoive)
 
         #self.section_list.itemDoubleClicked.connect(self)
         #self.list.itemDoubleClicked.connect(self.dbClickList)
         self.list.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tts_list.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.timeline.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.insert_TTS.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.vol.valueChanged.connect(self.volumeChanged)
         self.bar.sliderMoved.connect(self.barChanged)
         # tts list
@@ -92,11 +90,10 @@ class CWidget(QWidget):
             for i in self.df_list:
                 self.cmb.addItem(i.name)
             file = file_path
-            self.btn_push.setEnabled(True)  ## 엑셀파일 들어오면 버튼 클릭가능
             self.ToTTS(file)
             self.initTableWidget(0)
         else:
-            self.btn_push.setEnabled(False)  ##엑셀파일 읽히기전에는 버튼클릭 불가능
+            self.btn_script_add.setEnabled(False)  ##엑셀파일 읽히기전에는 버튼클릭 불가능
 
     def clickPlay(self):
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
@@ -273,7 +270,7 @@ class ThreadClass(QThread,QWidget):
         count = 0
         self.countChanged.emit(count)
         if file is None:
-            self.btn_push.setEnabled(False)
+            self.btn_script_add.setEnabled(False)
         else:
             load_wb = load_workbook(file, data_only=True)
             # 시트 이름으로 불러오기
