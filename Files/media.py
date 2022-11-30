@@ -74,6 +74,3 @@ class CMultiMedia(QObject):
 
     def errorHandle(self, e):
         self.state_signal.emit(self.player.errorString())
-
-    def moveMovie(self, pos):
-        self.player.setPosition(pos)
