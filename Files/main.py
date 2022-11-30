@@ -5,7 +5,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QPalette, QMovie
 from PyQt5.uic import loadUi
-from PyQt5 import uic, QtGui, QtCore
 from media import CMultiMedia
 from player import *
 from EditAudio import EditAudio as Audio
@@ -57,7 +56,7 @@ class CWidget(QWidget):
         self.btn_forward.clicked.connect(self.clickForward)
         self.btn_prev.clicked.connect(self.clickPrev)
         #영상 제작 버튼
-        self.btn_makemovie.clicked.connect(self.makeMoive)
+        self.btn_makemovie.clicked.connect(self.makeMovie)
 
         #self.section_list.itemDoubleClicked.connect(self)
         #self.list.itemDoubleClicked.connect(self.dbClickList)
@@ -72,6 +71,8 @@ class CWidget(QWidget):
         # tts list
         self.tts_list.doubleClicked.connect(self.playTTS)
         self.tts_list.itemSelectionChanged.connect(self.tableChanged)
+        # timeline dbclick
+        self.timeline.doubleClicked.connect(self.moveVideo)
         #쓰레드 설정
         self.thread= ThreadClass(parent=self)
         self.file_sender.connect(self.thread.ToTTS2)
@@ -85,7 +86,7 @@ class CWidget(QWidget):
         else:
             print("file unselected")
 
-    def executeVad(self, file_path):
+    def executeVad(self, file_path, pydub=None):
         # import
         import librosa  # librosa==0.9.1
         import webrtcvad  # webrtcvad==2.0.10
@@ -379,6 +380,15 @@ class CWidget(QWidget):
     # 영상 제작 버튼 내용 삽입
     def makeMovie(self):
         pass
+    def moveVideo(self):
+        row = self.timeline.currentIndex().row()
+        column = self.timeline.currentIndex().column()
+        if(column==0):
+            data= self.timeline.item(row, column).text()
+            time=int(float(data)*1000)
+            self.mp.posMoveMedia(time)
+        else:
+            pass
 
 
 class ThreadClass(QThread,QWidget):
