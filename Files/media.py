@@ -44,18 +44,11 @@ class CMultiMedia(QObject):
     def pauseMedia(self):
         self.player.pause()
 
-    def forwardMedia(self, end=False):
-        if end:
-            self.list.setCurrentIndex(0)
-        else:
-            self.list.next()
+    def forwardMedia(self, pos):
+        self.player.setPosition(pos+10000)
 
-    def prevMedia(self, begin=False):
-        if begin:
-            cnt = self.list.mediaCount()
-            self.list.setCurrentIndex(cnt - 1)
-        else:
-            self.list.previous()
+    def prevMedia(self,pos):
+        self.player.setPosition(pos - 10000)
 
     def volumeMedia(self, vol):
         self.player.setVolume(vol)

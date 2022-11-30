@@ -45,6 +45,7 @@ class CWidget(QWidget):
         self.vol.setValue(50)
         # play time
         self.duration = ''
+        self.pos=''
 
         # signal
         self.btn_video_add.clicked.connect(self.clickAdd)
@@ -76,10 +77,12 @@ class CWidget(QWidget):
     def clickAdd(self):
         files, ext = QFileDialog.getOpenFileNames(self, "Open Movie", '', 'Video (*.mp4 *.mpg *.mpeg *.avi *.wma *.mka)')
 
-        if files != '':
+        if files:
             self.mp.addMedia(files)
-            self.timeline_list, self.timeline_length_list = self.executeVad(files)
-            self.writetimeTableWidget(len(self.timeline_list))
+            #self.timeline_list, self.timeline_length_list = self.executeVad(files)
+            #self.writetimeTableWidget(len(self.timeline_list))
+        else:
+            print("file unselected")
     def executeVad(self, file_path):
         # import
         import librosa  # librosa==0.9.1
@@ -239,24 +242,10 @@ class CWidget(QWidget):
         self.mp.pauseMedia()
 
     def clickForward(self):
-        cnt = self.list.count()
-        curr = self.list.currentRow()
-        if curr < cnt - 1:
-            self.list.setCurrentRow(curr + 1)
-            self.mp.forwardMedia()
-        else:
-            self.list.setCurrentRow(0)
-            self.mp.forwardMedia(end=True)
+        self.mp.forwardMedia(self.pos)
 
     def clickPrev(self):
-        cnt = self.list.count()
-        curr = self.list.currentRow()
-        if curr == 0:
-            self.list.setCurrentRow(cnt - 1)
-            self.mp.prevMedia(begin=True)
-        else:
-            self.list.setCurrentRow(curr - 1)
-            self.mp.prevMedia()
+        self.mp.prevMedia(self.pos)
 
     def dbClickList(self, item):
         row = self.list.row(item)
@@ -283,6 +272,7 @@ class CWidget(QWidget):
         self.duration = stime[:idx]
 
     def updatePos(self, pos):
+        self.pos=pos
         self.bar.setValue(pos)
         td = datetime.timedelta(milliseconds=pos)
         stime = str(td)
