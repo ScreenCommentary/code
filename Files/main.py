@@ -229,8 +229,6 @@ class CWidget(QWidget):
             file = file_path
             self.ToTTS(file)
             self.initTableWidget(0)
-        else:
-            self.btn_script_add.setEnabled(False)  ##엑셀파일 읽히기전에는 버튼클릭 불가능
 
     def clickPlay(self):
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
