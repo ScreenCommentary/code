@@ -79,8 +79,8 @@ class CWidget(QWidget):
 
         if files:
             self.mp.addMedia(files)
-            #self.timeline_list, self.timeline_length_list = self.executeVad(files)
-            #self.writetimeTableWidget(len(self.timeline_list))
+            self.timeline_list, self.timeline_length_list = self.executeVad(files)
+            self.writetimeTableWidget(len(self.timeline_list))
         else:
             print("file unselected")
     def executeVad(self, file_path):
