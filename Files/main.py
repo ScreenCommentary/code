@@ -231,10 +231,7 @@ class CWidget(QWidget):
             self.initTableWidget(0)
 
     def clickPlay(self):
-        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-            self.mediaPlayer.pause()
-        else:
-            self.mediaPlayer.play()
+        self.mp.playMedia()
 
     def clickStop(self):
         self.mp.stopMedia()
@@ -426,6 +423,8 @@ class ThreadClass(QThread,QWidget):
     def run(self):
         self._mutex.lock()
         self._mutex.unlock()
+class VedioThread(QThread,QWidget):
+    pass
 
 
 if __name__ == '__main__':
