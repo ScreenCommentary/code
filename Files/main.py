@@ -8,6 +8,7 @@ from PyQt5.uic import loadUi
 from PyQt5 import uic, QtGui, QtCore
 from media import CMultiMedia
 from player import *
+from EditAudio import EditAudio as Audio
 import os
 import sys
 import datetime
@@ -17,7 +18,7 @@ from gtts import gTTS
 from openpyxl.reader.excel import load_workbook
 QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 
-#from EditAudio import *
+#
 class CWidget(QWidget):
     file_sender = pyqtSignal(object)
     def __init__(self):
@@ -83,6 +84,7 @@ class CWidget(QWidget):
             self.writetimeTableWidget(len(self.timeline_list))
         else:
             print("file unselected")
+
     def executeVad(self, file_path):
         # import
         import librosa  # librosa==0.9.1
@@ -315,7 +317,6 @@ class CWidget(QWidget):
                 self.list.setItem(r, c, item)
         self.list.resizeColumnsToContents()
 
-
     def ToTTS(self, file): #tts 변환 부분
         load_wb = load_workbook(file, data_only=True)
         # 시트 이름으로 불러오기
@@ -339,12 +340,15 @@ class CWidget(QWidget):
 
     def onCountChanged(self, value):
         self.progressBar.setValue(value)
+
     def playTTS(self):
         self.player.play(self.playlist, self.selectedList[0], self.playOption)
+
     def createPlaylist(self):
         self.playlist.clear()
         for i in range(self.tts_list.rowCount()):
             self.playlist.append(self.tts_list.item(i, 0).text())
+
     def tableChanged(self):
         self.selectedList.clear()
         for item in self.tts_list.selectedIndexes():
@@ -354,6 +358,7 @@ class CWidget(QWidget):
 
         if self.tts_list.rowCount() != 0 and len(self.selectedList) == 0:
             self.selectedList.append(0)
+
     def closeEvent(self, QCloseEvent):
         re = QMessageBox.question(self, "종료 확인", "종료 하시겠습니까?",
                     QMessageBox.Yes|QMessageBox.No)
@@ -372,13 +377,14 @@ class CWidget(QWidget):
             QCloseEvent.ignore()
 
     # 영상 제작 버튼 내용 삽입
-    def makeMoive(self):
-        print('1')
+    def makeMovie(self):
+        pass
 
 
 class ThreadClass(QThread,QWidget):
     file_receive = pyqtSignal(object)
     countChanged = pyqtSignal(int)
+
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent

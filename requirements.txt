@@ -28,3 +28,5 @@ scipy~=1.7.3
 natsort~=7.1.1
 webrtcvad~=2.0.10
 moviepy~=1.0.3
+librosa~=0.9.2
+pydub~=0.25.1
