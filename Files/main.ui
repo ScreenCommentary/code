@@ -225,7 +225,14 @@
           <widget class="QTableWidget" name="timeline"/>
          </item>
          <item>
-          <widget class="QTableWidget" name="insert_TTS"/>
+          <widget class="QTableWidget" name="insert_TTS">
+           <property name="dragDropMode">
+            <enum>QAbstractItemView::DropOnly</enum>
+           </property>
+           <property name="defaultDropAction">
+            <enum>Qt::IgnoreAction</enum>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

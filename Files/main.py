@@ -62,8 +62,14 @@ class CWidget(QWidget):
         #self.list.itemDoubleClicked.connect(self.dbClickList)
         self.list.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tts_list.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.list.setColumnCount(1)
+        self.list.setHorizontalHeaderLabels(['Commentary List'])
+        self.tts_list.setColumnCount(1)
+        self.tts_list.setHorizontalHeaderLabels(['TTS'])
         self.timeline.setColumnCount(2)
-        self.timeline.setHorizontalHeaderLabels(['start timestamp','length'])
+        self.timeline.setHorizontalHeaderLabels(['Start Timestamp', 'Length'])
+        self.insert_TTS.setColumnCount(1)
+        self.insert_TTS.setHorizontalHeaderLabels(['Blank List'])
         self.timeline.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.insert_TTS.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.vol.valueChanged.connect(self.volumeChanged)
@@ -207,10 +213,13 @@ class CWidget(QWidget):
     def writetimeTableWidget(self,row): ###
         self.timeline.setRowCount(row)
         self.timeline.setColumnCount(2)
+        self.insert_TTS.setRowCount(row)
+        self.insert_TTS.setColumnCount(1)
         for n, value in enumerate(self.timeline_list):  # loop over items in first column
             self.timeline.setItem(n, 0, QTableWidgetItem(str(value)))
         for n, value in enumerate(self.timeline_length_list):  # loop over items in first column
             self.timeline.setItem(n, 1, QTableWidgetItem(str(value)))
+            self.insert_TTS.setItem(n, 0, QTableWidgetItem(''))
         self.timeline.resizeColumnsToContents()
         
     def clickAddExcel(self):
