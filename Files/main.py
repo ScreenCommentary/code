@@ -207,6 +207,9 @@ class CWidget(QWidget):
                 # print("non_speech_section start timestamp:", round((frames[times].timestamp * 2), 3))
                 # print("length:", round(start_len[i] * 0.02, 10))
         
+        #remove mp4 to wab file to manage resorces
+        os.remove(file_path)
+        
         return non_speech_timestamp_list, non_speech_length_list
     
     def writetimeTableWidget(self,row): ###
