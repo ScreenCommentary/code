@@ -124,9 +124,6 @@ class CWidget(QWidget):
 
         # define webrtcvad VAD
         vad = webrtcvad.Vad(3)  # set aggressiveness from 0 to 3
-
-        self.progressVad()
-        
         class Frame(object):
             """Represents a "frame" of audio data."""
 
@@ -211,9 +208,6 @@ class CWidget(QWidget):
                 # print("length:", round(start_len[i] * 0.02, 10))
         
         return non_speech_timestamp_list, non_speech_length_list
-    
-    def progressVad(self):
-        QMessageBox.information(self,'Waiting for Vad','Please wait for non speech section appear')
     
     def writetimeTableWidget(self,row): ###
         self.timeline.setRowCount(row)
