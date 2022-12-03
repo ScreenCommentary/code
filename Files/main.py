@@ -19,7 +19,6 @@ QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 
 from ffmpeg import audio
 #
-speed=0.0
 class CWidget(QWidget):
     file_sender = pyqtSignal(object)
     speed_sender = pyqtSignal(float)
@@ -88,7 +87,7 @@ class CWidget(QWidget):
         self.speed_sender.connect(self.thread.speedValue)
         #spinbox- speed control
         self.speed_control.valueChanged.connect(self.speedControl)
-        self.speed_control.setValue(1.0)
+
         self.speed=0
     def clickAdd(self):
         files, ext = QFileDialog.getOpenFileNames(self, "Open Movie", '', 'Video (*.mp4 *.mpg *.mpeg *.avi *.wma *.mka)')
@@ -409,10 +408,7 @@ class CWidget(QWidget):
         self.speed = self.speed_control.value()
 
 class ThreadClass(QThread,QWidget):
-    file_receive = pyqtSignal(object)
-    speedvalue = pyqtSignal(float)
     countChanged = pyqtSignal(int)
-
 
     def __init__(self, parent):
         super().__init__(parent)
