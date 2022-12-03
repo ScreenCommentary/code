@@ -385,7 +385,15 @@ class CWidget(QWidget):
 
     # 영상 제작 버튼 내용 삽입
     def makeMovie(self):
-        pass
+        time_list = []
+        temp = Audio("test", time_list)
+        temp.setVideo(temp.videoName,
+                      temp.setAudio(temp.getOriginalAudio(),
+                                    temp.getTTS(len(time_list)),
+                                    temp.getTimestamp()),
+                      temp.getVideo(temp.videoName))
+        print(self.tts_list)
+
     def moveVideo(self):
         row = self.timeline.currentIndex().row()
         column = self.timeline.currentIndex().column()

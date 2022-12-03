@@ -12,7 +12,6 @@ class EditAudio:
     def getVideo(videoName):
         # videoclip = VideoFileClip(videoName)
         ##### location exception needed
-
         return VideoFileClip(videoName)
 
     def getOriginalAudio(videoclip):
@@ -25,7 +24,7 @@ class EditAudio:
         len - TTS file list coun
     '''
 
-    def getTTS(self):
+    def getTTS(len):
         TTS_audio = []
         for i in range(2, len + 2):
             TTS_audio.append(AudioFileClip("../TTS/kor" + str(i) + ".wav"))
@@ -44,7 +43,7 @@ class EditAudio:
     * test needed
     '''
 
-    def setAudio(audio, tts, timestamp):
+    def setAudio(self, audio, tts, timestamp):
         for i, j in [timestamp, len(timestamp)]:
             # result = CompositeAudioClip([audio.set_start(i), tts]) # 오디오 합성하기
             audio = CompositeAudioClip([tts[j].set_start(i), audio])  # 오디오 합성하기
@@ -61,7 +60,7 @@ class EditAudio:
         video - original video to composite
     '''
 
-    def setVideo(name, audio, video):
+    def setVideo(self, name, audio, video):
         video.audio = audio
         video.write_videofile(name + ".mp4")
         print("Video production succeeded")
