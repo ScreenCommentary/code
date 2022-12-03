@@ -17,6 +17,7 @@ from gtts import gTTS
 from openpyxl.reader.excel import load_workbook
 QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 
+from ffmpeg import audio
 #
 class CWidget(QWidget):
     file_sender = pyqtSignal(object)
@@ -426,6 +427,12 @@ class ThreadClass(QThread,QWidget):
                 a = load_ws['A' + str(i)].value
                 eng_wav = gTTS(a, lang='ko')
                 eng_wav.save('../TTS/kor' + str(i) + '.wav')
+                audio.a_speed('../TTS/kor' + str(i - 1) + '.wav', 1.3,
+                              '../TTS/kor_FAST' + str(i - 1) + '.wav')
+                if os.path.exists('../TTS/kor' + str(i - 1) + '.wav'):
+                    os.remove('../TTS/kor' + str(i - 1) + '.wav')
+                else:
+                    print("파일 존재 안함")
                 self.countChanged.emit(count)
 
 
