@@ -86,8 +86,7 @@ class CWidget(QWidget):
         self.file_sender.connect(self.thread.ToTTS2)
         self.speed_sender.connect(self.thread.speedValue)
         #spinbox- speed control
-        self.speed_control.valueChanged.connect(self.speedControl)
-
+        self.speed_control.setValue(1.0)
         self.speed=0
     def clickAdd(self):
         files, ext = QFileDialog.getOpenFileNames(self, "Open Movie", '', 'Video (*.mp4 *.mpg *.mpeg *.avi *.wma *.mka)')
@@ -339,7 +338,7 @@ class CWidget(QWidget):
         self.progressBar.setMaximum(maxrow-1)
         self.thread.countChanged.connect(self.onCountChanged)
         self.thread.start()
-        self.speed_sender.emit(self.speed)
+        self.speed_sender.emit(self.speed_control.value())
         self.file_sender.emit(file)
         #TTS fileList
         path_dir = "../TTS/*"
@@ -404,8 +403,6 @@ class CWidget(QWidget):
         else:
             pass
 
-    def speedControl(self):
-        self.speed = self.speed_control.value()
 
 class ThreadClass(QThread,QWidget):
     countChanged = pyqtSignal(int)
