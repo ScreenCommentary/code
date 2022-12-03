@@ -422,11 +422,11 @@ class ThreadClass(QThread,QWidget):
             maxrow = load_ws.max_row
 
             # 셀 주소로 값 출력
-            for i in range(1, maxrow + 1):
+            for i in range(2, maxrow + 1):
                 count+=1
                 a = load_ws['A' + str(i)].value
                 eng_wav = gTTS(a, lang='ko')
-                eng_wav.save('../TTS/kor' + str(i) + '.wav')
+                eng_wav.save('../TTS/kor' + str(i-1) + '.wav')
                 audio.a_speed('../TTS/kor' + str(i - 1) + '.wav', 1.8,
                               '../TTS/kor_FAST' + str(i - 1) + '.wav')
                 if os.path.exists('../TTS/kor' + str(i - 1) + '.wav'):
@@ -434,7 +434,6 @@ class ThreadClass(QThread,QWidget):
                 else:
                     print("파일 존재 안함")
                 self.countChanged.emit(count)
-        os.remove('../TTS/kor_FAST0.wav')
 
 
 
