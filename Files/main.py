@@ -17,9 +17,11 @@ from gtts import gTTS
 from openpyxl.reader.excel import load_workbook
 QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 
+from ffmpeg import audio
 #
 class CWidget(QWidget):
     file_sender = pyqtSignal(object)
+    speed_sender = pyqtSignal(float)
     def __init__(self):
         super().__init__()
         loadUi('main.ui', self)
@@ -82,6 +84,10 @@ class CWidget(QWidget):
         #쓰레드 설정
         self.thread= ThreadClass(parent=self)
         self.file_sender.connect(self.thread.ToTTS2)
+        self.speed_sender.connect(self.thread.speedValue)
+        #spinbox- speed control
+        self.speed_control.setValue(1.0)
+        self.speed=0
     def clickAdd(self):
         files, ext = QFileDialog.getOpenFileNames(self, "Open Movie", '', 'Video (*.mp4 *.mpg *.mpeg *.avi *.wma *.mka)')
 
@@ -332,6 +338,7 @@ class CWidget(QWidget):
         self.progressBar.setMaximum(maxrow-1)
         self.thread.countChanged.connect(self.onCountChanged)
         self.thread.start()
+        self.speed_sender.emit(self.speed_control.value())
         self.file_sender.emit(file)
         #TTS fileList
         path_dir = "../TTS/*"
@@ -406,17 +413,22 @@ class CWidget(QWidget):
 
 
 class ThreadClass(QThread,QWidget):
-    file_receive = pyqtSignal(object)
     countChanged = pyqtSignal(int)
 
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
         self._mutex = QMutex()
+        self.speed_value = 0.0
 
+    def speedValue(self, speed):
+        self.speedValue= speed
 
-    @pyqtSlot(object)
-    def ToTTS2(self,file):
+    def run(self):
+        self._mutex.lock()
+        self._mutex.unlock()
+
+    def ToTTS2(self, file):
         self._mutex.lock()
         count = 0
         self.countChanged.emit(count)
@@ -433,17 +445,17 @@ class ThreadClass(QThread,QWidget):
                 count+=1
                 a = load_ws['A' + str(i)].value
                 eng_wav = gTTS(a, lang='ko')
-                eng_wav.save('../TTS/kor' + str(i) + '.wav')
+                eng_wav.save('../TTS/kor' + str(i-1) + '.wav')
+                audio.a_speed('../TTS/kor' + str(i - 1) + '.wav', self.speedValue,
+                              '../TTS/kor_FAST' + str(i - 1) + '.wav')
+                if os.path.exists('../TTS/kor' + str(i - 1) + '.wav'):
+                    os.remove('../TTS/kor' + str(i - 1) + '.wav')
+                else:
+                    print("파일 존재 안함")
                 self.countChanged.emit(count)
-
-
         self._mutex.unlock()
 
-    def run(self):
-        self._mutex.lock()
-        self._mutex.unlock()
-class VedioThread(QThread,QWidget):
-    pass
+
 
 
 if __name__ == '__main__':
