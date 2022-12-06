@@ -23,7 +23,8 @@ QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 class CWidget(QWidget):
     file_sender = pyqtSignal(object)
     speed_sender = pyqtSignal(float)
-
+    file_sender2 = pyqtSignal(object)
+    list_sender = pyqtSignal(object)
     def __init__(self):
         super().__init__()
         loadUi('main.ui', self)
@@ -87,12 +88,16 @@ class CWidget(QWidget):
         self.thread= ThreadClass(parent=self)
         self.file_sender.connect(self.thread.ToTTS2)
         self.speed_sender.connect(self.thread.speedValue)
+        self.thread2 = MakeMovieThread(parent=self)
+        self.file_sender2.connect(self.thread2.makeMovie)
+        self.list_sender.connect(self.thread2.listGetter)
         #spinbox- speed control
         self.speed_control.setValue(1.0)
         self.speed=0
+        self.file=''
     def clickAdd(self):
         files, ext = QFileDialog.getOpenFileNames(self, "Open Movie", '', 'Video (*.mp4 *.mpg *.mpeg *.avi *.wma *.mka)')
-
+        self.file = files
         if files:
             self.mp.addMedia(files)
             self.timeline_list, self.timeline_length_list = self.executeVad(files)
@@ -400,18 +405,22 @@ class CWidget(QWidget):
         timeline_list : time list founded
 
         '''
-        time_list = self.selectedList
-        print(self.insert_TTS)
-
-        temp = Audio("prototype.mp4", time_list)
-        # temp.videoName = "prototype.mp4"
-        # 선택된 timeline 받아오기
-        temp.setVideo(temp.videoName,
-                      temp.setAudio(temp.getOriginalAudio(temp.video),
-                                    temp.getTTS(self.selectedList),
-                                    time_list),
-                      temp.video)
-        print(self.tts_list)
+        #
+        # time_list = self.selectedList
+        # print(self.insert_TTS)
+        #
+        # temp = Audio("prototype.mp4", time_list)
+        # # temp.videoName = "prototype.mp4"
+        # # 선택된 timeline 받아오기
+        # temp.setVideo(temp.videoName,
+        #               temp.setAudio(temp.getOriginalAudio(temp.video),
+        #                             temp.getTTS(self.selectedList),
+        #                             time_list),
+        #               temp.video)
+        # print(self.tts_list)
+        self.thread2.start()
+        self.file_sender2.emit(self.file)
+        self.list_sender.emit(self.selectedList)
 
     def moveVideo(self):
         row = self.timeline.currentIndex().row()
@@ -468,7 +477,32 @@ class ThreadClass(QThread,QWidget):
         self._mutex.unlock()
 
 
+class MakeMovieThread(QThread,QWidget):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+        self._mutex = QMutex()
+        self.selectedList=''
 
+    def makeMovie(self,file):
+        '''
+        time_list : 개수?
+        playlist : tts name list
+        timeline_list : time list founded
+
+        '''
+        time_list = self.selectedList
+
+        temp = Audio("prototype.mp4", time_list)
+        # temp.videoName = "prototype.mp4"
+        # 선택된 timeline 받아오기
+        temp.setVideo(temp.videoName,
+                      temp.setAudio(temp.getOriginalAudio(temp.video),
+                                    temp.getTTS(self.selectedList),
+                                    time_list),
+                      temp.video)
+    def listGetter(self,list):
+        self.selectedList = list
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
