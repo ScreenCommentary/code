@@ -8,13 +8,12 @@ class EditAudio:
     def __init__(self, videoName, times):
         self.videoName = videoName
         self.timestamp = times
+        try:
+            self.video = VideoFileClip(videoName)
+        except Exception as IO:
+            print("Not detection")
 
-    def getVideo(videoName):
-        # videoclip = VideoFileClip(videoName)
-        ##### location exception needed
-        return VideoFileClip(videoName)
-
-    def getOriginalAudio(videoclip):
+    def getOriginalAudio(self, videoclip):
         return videoclip.audio
 
     '''
@@ -24,14 +23,14 @@ class EditAudio:
         len - TTS file list coun
     '''
 
-    def getTTS(len):
+    def getTTS(self, items):
         TTS_audio = []
-        for i in range(2, len + 2):
-            TTS_audio.append(AudioFileClip("../TTS/kor" + str(i) + ".wav"))
+        for i in items:
+            TTS_audio.append(AudioFileClip("../TTS/kor_FAST" + str(i) + ".wav"))
         return TTS_audio
 
-    def getTimestamp(timestamp):
-        return timestamp
+    def getTimestamp(self, timestamp):
+        return self.timestamp
 
     '''
     function name : setAudio
@@ -44,9 +43,9 @@ class EditAudio:
     '''
 
     def setAudio(self, audio, tts, timestamp):
-        for i, j in [timestamp, len(timestamp)]:
+        for i in range(len(timestamp)):
             # result = CompositeAudioClip([audio.set_start(i), tts]) # 오디오 합성하기
-            audio = CompositeAudioClip([tts[j].set_start(i), audio])  # 오디오 합성하기
+            audio = CompositeAudioClip([tts[i].set_start(timestamp[i]), audio])  # 오디오 합성하기
         return audio
 
     # setAudio(getOriginalAudio(), getTTS(), getTimestamp())
@@ -62,7 +61,8 @@ class EditAudio:
 
     def setVideo(self, name, audio, video):
         video.audio = audio
-        video.write_videofile(name + ".mp4")
+        # result name?
+        video.write_videofile("result.mp4")
         print("Video production succeeded")
         return video
     # setVideo(name, setAudio(), getVideo())

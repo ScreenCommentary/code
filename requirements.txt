@@ -23,7 +23,7 @@ six @ file:///tmp/build/80754af9/six_1644875935023/work
 toml @ file:///tmp/build/80754af9/toml_1616166611790/work
 urllib3==1.26.13
 
-numpy~=1.23.4
+numpy~=1.22.3
 scipy~=1.7.3
 natsort~=7.1.1
 webrtcvad~=2.0.10

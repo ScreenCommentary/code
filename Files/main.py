@@ -14,14 +14,16 @@ import datetime
 import pandas as pd
 from PyQt5.QtWidgets import  QTableWidgetItem, QTableWidget, QPushButton
 from gtts import gTTS
+from ffmpeg import audio
 from openpyxl.reader.excel import load_workbook
 QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 
-from ffmpeg import audio
+
 #
 class CWidget(QWidget):
     file_sender = pyqtSignal(object)
     speed_sender = pyqtSignal(float)
+
     def __init__(self):
         super().__init__()
         loadUi('main.ui', self)
@@ -392,13 +394,23 @@ class CWidget(QWidget):
 
     # 영상 제작 버튼 내용 삽입
     def makeMovie(self):
-        time_list = []
-        temp = Audio("test", time_list)
+        '''
+        time_list : 개수?
+        playlist : tts name list
+        timeline_list : time list founded
+
+        '''
+        time_list = self.selectedList
+        print(self.insert_TTS)
+
+        temp = Audio("prototype.mp4", time_list)
+        # temp.videoName = "prototype.mp4"
+        # 선택된 timeline 받아오기
         temp.setVideo(temp.videoName,
-                      temp.setAudio(temp.getOriginalAudio(),
-                                    temp.getTTS(len(time_list)),
-                                    temp.getTimestamp()),
-                      temp.getVideo(temp.videoName))
+                      temp.setAudio(temp.getOriginalAudio(temp.video),
+                                    temp.getTTS(self.selectedList),
+                                    time_list),
+                      temp.video)
         print(self.tts_list)
 
     def moveVideo(self):
