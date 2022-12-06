@@ -30,7 +30,6 @@ class CWidget(QWidget):
         loadUi('main.ui', self)
         self.setWindowTitle("Screen Commentary Video Production Program")
         self.progressBar.setValue(0)
-        self.movie_progress.setValue(0)
         # Multimedia Object
         self.mp = CMultiMedia(self, self.view)
         self.player = CPlayer(self)
