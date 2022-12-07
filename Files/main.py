@@ -377,6 +377,8 @@ class ThreadClass(QThread,QWidget):
                     print("파일 존재 안함")
                 self.countChanged.emit(count)
         self._mutex.unlock()
+        self.quit()
+        self.wait(5000)
 
 class VideoThread(QThread,QWidget):
     file_receive = pyqtSignal(object)
@@ -497,6 +499,8 @@ class VideoThread(QThread,QWidget):
                 # print("length:", round(start_len[i] * 0.02, 10))
         self.timestamp_list.emit(non_speech_timestamp_list)
         self.length_list.emit(non_speech_length_list)
+        self.quit()
+        self.wait(5000)
         # return non_speech_timestamp_list, non_speech_length_list
 
 
@@ -526,6 +530,8 @@ class MakeMovieThread(QThread,QWidget):
                                     temp.getTTS(self.selectedList),
                                     time_list),
                       temp.video)
+        self.quit()
+        self.wait(5000)
     def listGetter(self,list):
         self.selectedList = list
 
