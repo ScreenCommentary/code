@@ -17,9 +17,9 @@ class CMultiMedia(QObject):
 
         # signal
         self.player.error.connect(self.errorHandle)
-        self.player.stateChanged.connect(self.stateChanged)
-        self.player.durationChanged.connect(self.durationChanged)
-        self.player.positionChanged.connect(self.positionChanged)
+        # self.player.stateChanged.connect(self.stateChanged)
+        # self.player.durationChanged.connect(self.durationChanged)
+        # self.player.positionChanged.connect(self.positionChanged)
 
         # user signal
         self.state_signal.connect(self.parent.updateState)
@@ -56,21 +56,21 @@ class CMultiMedia(QObject):
     def posMoveMedia(self, pos):
         self.player.setPosition(pos)
 
-    def stateChanged(self, state):
-        msg = ''
-        if state == QMediaPlayer.StoppedState:
-            msg = 'Stopped'
-        elif state == QMediaPlayer.PlayingState:
-            msg = 'Playing'
-        else:
-            msg = 'Paused'
-        self.state_signal.emit(msg)
-
-    def durationChanged(self, duration):
-        self.duration_signal.emit(duration)
-
-    def positionChanged(self, pos):
-        self.position_signal.emit(pos)
+    # def stateChanged(self, state):
+    #     msg = ''
+    #     if state == QMediaPlayer.StoppedState:
+    #         msg = 'Stopped'
+    #     elif state == QMediaPlayer.PlayingState:
+    #         msg = 'Playing'
+    #     else:
+    #         msg = 'Paused'
+    #     self.state_signal.emit(msg)
+    #
+    # def durationChanged(self, duration):
+    #     self.duration_signal.emit(duration)
+    #
+    # def positionChanged(self, pos):
+    #     self.position_signal.emit(pos)
 
     def errorHandle(self, e):
         self.state_signal.emit(self.player.errorString())
