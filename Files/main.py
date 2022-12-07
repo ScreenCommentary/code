@@ -292,6 +292,7 @@ class CWidget(QWidget):
         row = len(fList)
         for i in fList:
             os.remove(i)
+        os.remove("mp4towav.wav")
 
         if re == QMessageBox.Yes:
             QCloseEvent.accept()
