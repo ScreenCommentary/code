@@ -106,7 +106,7 @@ class CWidget(QWidget):
         self.file=''
     def clickAdd(self):
         files, ext = QFileDialog.getOpenFileNames(self, "Open Movie", '', 'Video (*.mp4 *.mpg *.mpeg *.avi *.wma *.mka)')
-
+        self.file=files
         if files:
             self.mp.addMedia(files)
             self.thread2.timestamp_list.connect(self.timelineListAdd)
@@ -508,6 +508,7 @@ class MakeMovieThread(QThread,QWidget):
         self.selectedList=''
 
     def makeMovie(self,file):
+        file_path=file[0]
         '''
         time_list : 개수?
         playlist : tts name list
@@ -516,7 +517,7 @@ class MakeMovieThread(QThread,QWidget):
         '''
         time_list = self.selectedList
 
-        temp = Audio(file, time_list)
+        temp = Audio(file_path, time_list)
         # temp.videoName = "prototype.mp4"
         # 선택된 timeline 받아오기
         temp.setVideo(temp.videoName,
