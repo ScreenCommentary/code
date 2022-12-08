@@ -322,6 +322,8 @@ class CWidget(QWidget):
                                     time_list),
                       temp.video)
         print(self.tts_list)
+        QMessageBox.information(self, '영상 제작 완료', '제작이 완료되었습니다.')
+
         # self.thread2.start()
         # self.file_sender2.emit(self.file)
         # self.list_sender.emit(self.selectedList)
