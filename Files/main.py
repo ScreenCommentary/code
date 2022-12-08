@@ -137,7 +137,9 @@ class CWidget(QWidget):
             self.timeline.setItem(n, 1, QTableWidgetItem(str(value)))
             self.insert_TTS.setItem(n, 0, QTableWidgetItem(''))
         self.timeline.resizeColumnsToContents()
-        
+
+
+
     def clickAddExcel(self):
         path_dir = "../TTS/*"
         fList = glob.glob(path_dir)

@@ -248,10 +248,10 @@
          <item>
           <widget class="QTableWidget" name="insert_TTS">
            <property name="dragDropMode">
-            <enum>QAbstractItemView::DropOnly</enum>
+            <enum>QAbstractItemView::DragDrop</enum>
            </property>
            <property name="defaultDropAction">
-            <enum>Qt::IgnoreAction</enum>
+            <enum>Qt::MoveAction</enum>
            </property>
           </widget>
          </item>
