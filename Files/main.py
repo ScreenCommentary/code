@@ -18,10 +18,11 @@ import os
 import sys
 import datetime
 import pandas as pd
-from PyQt5.QtWidgets import  QTableWidgetItem, QTableWidget, QPushButton
+from PyQt5.QtWidgets import QTableWidgetItem, QTableWidget, QPushButton
 from gtts import gTTS
 from ffmpeg import audio
 from openpyxl.reader.excel import load_workbook
+
 QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 
 
@@ -30,6 +31,7 @@ class CWidget(QWidget):
     file_sender = pyqtSignal(object)
     speed_sender = pyqtSignal(float)
     list_add = pyqtSignal(object)
+
     # file_sender2 = pyqtSignal(object)
     # list_sender = pyqtSignal(object)
     def __init__(self):
@@ -46,8 +48,8 @@ class CWidget(QWidget):
         pal.setColor(QPalette.Background, Qt.black)
         self.view.setAutoFillBackground(True)
         self.view.setPalette(pal)
-        self.df_list=[]
-        self.playlist=[]
+        self.df_list = []
+        self.playlist = []
         self.selectedList = [0]
         self.playOption = QMediaPlaylist.Sequential
 
@@ -56,7 +58,7 @@ class CWidget(QWidget):
         self.vol.setValue(50)
         # play time
         self.duration = ''
-        self.pos=''
+        self.pos = ''
 
         # signal
         self.btn_video_add.clicked.connect(self.clickAdd)
@@ -66,11 +68,11 @@ class CWidget(QWidget):
         self.btn_pause.clicked.connect(self.clickPause)
         self.btn_forward.clicked.connect(self.clickForward)
         self.btn_prev.clicked.connect(self.clickPrev)
-        #영상 제작 버튼
+        # 영상 제작 버튼
         self.btn_makemovie.clicked.connect(self.makeMovie)
 
-        #self.section_list.itemDoubleClicked.connect(self)
-        #self.list.itemDoubleClicked.connect(self.dbClickList)
+        # self.section_list.itemDoubleClicked.connect(self)
+        # self.list.itemDoubleClicked.connect(self.dbClickList)
         self.list.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tts_list.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.list.setColumnCount(1)
@@ -90,8 +92,8 @@ class CWidget(QWidget):
         self.tts_list.itemSelectionChanged.connect(self.tableChanged)
         # timeline dbclick
         self.timeline.doubleClicked.connect(self.moveVideo)
-        #쓰레드 설정
-        self.thread= ThreadClass(parent=self)
+        # 쓰레드 설정
+        self.thread = ThreadClass(parent=self)
         self.file_sender.connect(self.thread.ToTTS2)
         self.speed_sender.connect(self.thread.speedValue)
         self.thread2 = VideoThread(parent=self)
@@ -100,13 +102,15 @@ class CWidget(QWidget):
         # self.file_sender2.connect(self.thread3.makeMovie)
         # self.list_sender.connect(self.thread3.listGetter)
 
-        #spinbox- speed control
+        # spinbox- speed control
         self.speed_control.setValue(1.0)
-        self.speed=0
-        self.file=''
+        self.speed = 0
+        self.file = ''
+
     def clickAdd(self):
-        files, ext = QFileDialog.getOpenFileNames(self, "Open Movie", '', 'Video (*.mp4 *.mpg *.mpeg *.avi *.wma *.mka)')
-        self.file=files
+        files, ext = QFileDialog.getOpenFileNames(self, "Open Movie", '',
+                                                  'Video (*.mp4 *.mpg *.mpeg *.avi *.wma *.mka)')
+        self.file = files
         if files:
             self.mp.addMedia(files)
             self.thread2.timestamp_list.connect(self.timelineListAdd)
@@ -117,16 +121,13 @@ class CWidget(QWidget):
         else:
             print("file unselected")
 
-
     def timelineListAdd(self, list):
-        self.timeline_list=list
+        self.timeline_list = list
 
+    def lengthListAdd(self, list):
+        self.timeline_length_list = list
 
-    def lengthListAdd(self,list):
-        self.timeline_length_list=list
-
-    
-    def writetimeTableWidget(self,row): ###
+    def writetimeTableWidget(self, row):  ###
         self.timeline.setRowCount(row)
         self.timeline.setColumnCount(2)
         self.insert_TTS.setRowCount(row)
@@ -137,8 +138,6 @@ class CWidget(QWidget):
             self.timeline.setItem(n, 1, QTableWidgetItem(str(value)))
             self.insert_TTS.setItem(n, 0, QTableWidgetItem(''))
         self.timeline.resizeColumnsToContents()
-
-
 
     def clickAddExcel(self):
         path_dir = "../TTS/*"
@@ -197,7 +196,7 @@ class CWidget(QWidget):
         self.duration = stime[:idx]
 
     def updatePos(self, pos):
-        self.pos=pos
+        self.pos = pos
         self.bar.setValue(pos)
         td = datetime.timedelta(milliseconds=pos)
         stime = str(td)
@@ -205,7 +204,7 @@ class CWidget(QWidget):
         stime = f'{stime[:idx]} / {self.duration}'
         self.playtime.setText(stime)
 
-    def loadData(self, file_name):###
+    def loadData(self, file_name):  ###
         df_list = []
         with pd.ExcelFile(file_name) as wb:
             for i, sn in enumerate(wb.sheet_names):
@@ -219,7 +218,7 @@ class CWidget(QWidget):
                     df_list.append(df)
         return df_list
 
-    def initTableWidget(self, id):###
+    def initTableWidget(self, id):  ###
         # 테이블 위젯 값 쓰기
         self.list.clear()
         # select dataframe
@@ -233,24 +232,24 @@ class CWidget(QWidget):
         self.list.setRowCount(row)
         self.writeTableWidget(id, df, row, col)
 
-    def writeTableWidget(self, id, df, row, col): ###
+    def writeTableWidget(self, id, df, row, col):  ###
         for r in range(row):
             for c in range(col):
                 item = QTableWidgetItem(str(df.iloc[r][c]))
                 self.list.setItem(r, c, item)
         self.list.resizeColumnsToContents()
 
-    def ToTTS(self, file): #tts 변환 부분
+    def ToTTS(self, file):  # tts 변환 부분
         load_wb = load_workbook(file, data_only=True)
         # 시트 이름으로 불러오기
         load_ws = load_wb['Sheet1']
         maxrow = load_ws.max_row
-        self.progressBar.setMaximum(maxrow-1)
+        self.progressBar.setMaximum(maxrow - 1)
         self.thread.countChanged.connect(self.onCountChanged)
         self.thread.start()
         self.speed_sender.emit(self.speed_control.value())
         self.file_sender.emit(file)
-        #TTS fileList
+        # TTS fileList
         path_dir = "../TTS/*"
         fList = glob.glob(path_dir)
         fList = [file for file in fList if file.endswith('.wav')]
@@ -278,15 +277,17 @@ class CWidget(QWidget):
         for item in self.tts_list.selectedIndexes():
             self.selectedList.append(item.row())
 
+        # selectedList list화
         self.selectedList = list(set(self.selectedList))
 
+        # tts_list가 있고 선택된 항목이 0이라면
         if self.tts_list.rowCount() != 0 and len(self.selectedList) == 0:
             self.selectedList.append(0)
 
     def closeEvent(self, QCloseEvent):
-        re = QMessageBox.question(self, "종료 확인", "종료 하시겠습니까?",
-                    QMessageBox.Yes|QMessageBox.No)
-        #remove TTS file when program is off
+        re = QMessageBox.question(self, "종료 확인", "종료하시겠습니까?",
+                                  QMessageBox.Yes | QMessageBox.No)
+        # remove TTS file when program is off
         path_dir = "../TTS/*"
         fList = glob.glob(path_dir)
         fList = [file for file in fList if file.endswith('.wav')]
@@ -303,45 +304,43 @@ class CWidget(QWidget):
 
     # 영상 제작 버튼 내용 삽입
     def makeMovie(self):
-        '''
-        time_list : 개수?
-        playlist : tts name list
-        timeline_list : time list founded
-
-        '''
         QMessageBox.warning(self, '경고', '영상 제작을 시작합니다. \n응답없음이 떠도 종료하지 마세요.\n확인을 누르면 진행됩니다.')
-        time_list = self.selectedList
-        print(self.insert_TTS)
 
-        temp = Audio(self.file[0], time_list)
-        # temp.videoName = "prototype.mp4"
-        # 선택된 timeline 받아오기
-        temp.setVideo(temp.videoName,
-                      temp.setAudio(temp.getOriginalAudio(temp.video),
-                                    temp.getTTS(self.selectedList),
-                                    time_list),
-                      temp.video)
-        print(self.tts_list)
+        # make input parameter (tts time list)
+        time_list = []
+        index_list = []
+        for n, value in enumerate(self.timeline_list):  # loop over items in first column
+            temp = self.insert_TTS.takeItem(n, 0).text()
+            if temp != '':
+                time_list.append(self.timeline_list[n])
+                index_list.append(n)
+
+        print(time_list)
+
+        obj = Audio(self.file[0], time_list)
+        obj.setVideo(obj.videoName,
+                     obj.setAudio(obj.getOriginalAudio(obj.video),
+                                  obj.getTTS(index_list)),
+                     obj.video)
+
         QMessageBox.information(self, '영상 제작 완료', '제작이 완료되었습니다.')
 
         # self.thread2.start()
         # self.file_sender2.emit(self.file)
         # self.list_sender.emit(self.selectedList)
 
-
-
     def moveVideo(self):
         row = self.timeline.currentIndex().row()
         column = self.timeline.currentIndex().column()
-        if(column==0):
-            data= self.timeline.item(row, column).text()
-            time=int(float(data)*1000)
+        if column == 0:
+            data = self.timeline.item(row, column).text()
+            time = int(float(data) * 1000)
             self.mp.posMoveMedia(time)
         else:
             pass
 
 
-class ThreadClass(QThread,QWidget):
+class ThreadClass(QThread, QWidget):
     countChanged = pyqtSignal(int)
 
     def __init__(self, parent):
@@ -351,7 +350,7 @@ class ThreadClass(QThread,QWidget):
         self.speed_value = 0.0
 
     def speedValue(self, speed):
-        self.speedValue= speed
+        self.speedValue = speed
 
     def run(self):
         self._mutex.lock()
@@ -371,10 +370,10 @@ class ThreadClass(QThread,QWidget):
 
             # 셀 주소로 값 출력
             for i in range(2, maxrow + 1):
-                count+=1
+                count += 1
                 a = load_ws['A' + str(i)].value
                 eng_wav = gTTS(a, lang='ko')
-                eng_wav.save('../TTS/kor' + str(i-1) + '.wav')
+                eng_wav.save('../TTS/kor' + str(i - 1) + '.wav')
                 audio.a_speed('../TTS/kor' + str(i - 1) + '.wav', self.speedValue,
                               '../TTS/kor_FAST' + str(i - 1) + '.wav')
                 if os.path.exists('../TTS/kor' + str(i - 1) + '.wav'):
@@ -386,7 +385,8 @@ class ThreadClass(QThread,QWidget):
         self.quit()
         self.wait(5000)
 
-class VideoThread(QThread,QWidget):
+
+class VideoThread(QThread, QWidget):
     file_receive = pyqtSignal(object)
     timestamp_list = pyqtSignal(list)
     length_list = pyqtSignal(list)
@@ -395,6 +395,7 @@ class VideoThread(QThread,QWidget):
         super().__init__(parent)
         self.parent = parent
         self._mutex = QMutex()
+
     @pyqtSlot(object)
     def executeVad(self, file, pydub=None):
         # files
@@ -508,7 +509,6 @@ class VideoThread(QThread,QWidget):
         self.quit()
         self.wait(5000)
         # return non_speech_timestamp_list, non_speech_length_list
-
 
 
 # class MakeMovieThread(QThread,QWidget):

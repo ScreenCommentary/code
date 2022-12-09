@@ -20,13 +20,13 @@ class EditAudio:
     function name : getTTS
     do : make a list to save TTS file names, list length is count of TTS files
     param :
-        len - TTS file list coun
+        len - TTS file list count
     '''
-
     def getTTS(self, items):
         TTS_audio = []
         for i in items:
             TTS_audio.append(AudioFileClip("../TTS/kor_FAST" + str(i+1) + ".wav"))
+            print(i)
         return TTS_audio
 
     def getTimestamp(self, timestamp):
@@ -42,10 +42,10 @@ class EditAudio:
     * test needed
     '''
 
-    def setAudio(self, audio, tts, timestamp):
-        for i in range(len(timestamp)):
+    def setAudio(self, audio, tts):
+        for i in range(len(self.timestamp)):
             # result = CompositeAudioClip([audio.set_start(i), tts]) # 오디오 합성하기
-            audio = CompositeAudioClip([tts[i].set_start(timestamp[i]), audio])  # 오디오 합성하기
+            audio = CompositeAudioClip([tts[i].set_start(self.timestamp[i]), audio])  # 오디오 합성하기
         return audio
 
     # setAudio(getOriginalAudio(), getTTS(), getTimestamp())

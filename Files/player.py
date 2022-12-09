@@ -32,7 +32,7 @@ class CPlayer:
     def updatePlayMode(self, option):
         self.playlist.setPlaybackMode(option)
 
-    def upateVolume(self, vol):
+    def updateVolume(self, vol):
         self.player.setVolume(vol)
 
 
