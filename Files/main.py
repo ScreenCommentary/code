@@ -309,7 +309,7 @@ class CWidget(QWidget):
         timeline_list : time list founded
 
         '''
-        QMessageBox.warning(self, '경고', '영상 제작중입니다. \n응답없음이 떠도 종료하지 마세요.\n확인을 누르면 진행됩니다.')
+        QMessageBox.warning(self, '경고', '영상 제작을 시작합니다. \n응답없음이 떠도 종료하지 마세요.\n확인을 누르면 진행됩니다.')
         time_list = self.selectedList
         print(self.insert_TTS)
 
