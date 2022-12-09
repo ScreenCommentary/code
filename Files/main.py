@@ -500,7 +500,7 @@ class VideoThread(QThread,QWidget):
             # 1분짜리 영상이 30까지 있는걸로 봐서 2배를 해줘서 시간을 맞춤
             if (round(start_len[i] * 0.02, 10) > 0.01):
                 non_speech_timestamp_list.append(round((frames[times].timestamp * 2), 3))
-                non_speech_length_list.append(round(start_len[i] * 0.02, 10))
+                non_speech_length_list.append(round(start_len[i] * 0.02, 25))
                 # print("non_speech_section start timestamp:", round((frames[times].timestamp * 2), 3))
                 # print("length:", round(start_len[i] * 0.02, 10))
         self.timestamp_list.emit(non_speech_timestamp_list)
