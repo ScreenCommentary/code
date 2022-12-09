@@ -1,27 +1,27 @@
+import datetime
 import glob
-import natsort
-# import
-import librosa  # librosa==0.9.1
-import webrtcvad  # webrtcvad==2.0.10
-import numpy as np
-from os import path
-from pydub import AudioSegment
-from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PyQt5.QtGui import QPalette, QMovie
-from PyQt5.uic import loadUi
-from media import CMultiMedia
-from player import *
-from EditAudio import EditAudio as Audio
 import os
 import sys
-import datetime
+
+# import
+import librosa  # librosa==0.9.1
+import natsort
+import numpy as np
 import pandas as pd
-from PyQt5.QtWidgets import QTableWidgetItem, QTableWidget, QPushButton
-from gtts import gTTS
+import webrtcvad  # webrtcvad==2.0.10
+from PyQt5.QtCore import *
+from PyQt5.QtGui import QPalette
+from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.uic import loadUi
 from ffmpeg import audio
+from gtts import gTTS
 from openpyxl.reader.excel import load_workbook
+from pydub import AudioSegment
+
+from EditAudio import EditAudio as Audio
+from media import CMultiMedia
+from player import *
 
 QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 
@@ -277,10 +277,10 @@ class CWidget(QWidget):
         for item in self.tts_list.selectedIndexes():
             self.selectedList.append(item.row())
 
-        # selectedList list화
+        # selectedList list 화
         self.selectedList = list(set(self.selectedList))
 
-        # tts_list가 있고 선택된 항목이 0이라면
+        # tts_list 가 있고 선택된 항목이 0이라면
         if self.tts_list.rowCount() != 0 and len(self.selectedList) == 0:
             self.selectedList.append(0)
 
@@ -302,25 +302,23 @@ class CWidget(QWidget):
         else:
             QCloseEvent.ignore()
 
-    # 영상 제작 버튼 내용 삽입
+    # 영상 제작 버튼 클릭 시 내용 삽입
     def makeMovie(self):
         QMessageBox.warning(self, '경고', '영상 제작을 시작합니다. \n응답없음이 떠도 종료하지 마세요.\n확인을 누르면 진행됩니다.')
 
         # make input parameter (tts time list)
         time_list = []
-        index_list = []
+        tts_file_list = []
         for n, value in enumerate(self.timeline_list):  # loop over items in first column
-            temp = self.insert_TTS.takeItem(n, 0).text()
-            if temp != '':
+            item = self.insert_TTS.takeItem(n, 0).text()
+            if item != '':
                 time_list.append(self.timeline_list[n])
-                index_list.append(n)
-
-        print(time_list)
+                tts_file_list.append(item)
 
         obj = Audio(self.file[0], time_list)
         obj.setVideo(obj.videoName,
                      obj.setAudio(obj.getOriginalAudio(obj.video),
-                                  obj.getTTS(index_list)),
+                                  obj.getTTS(tts_file_list)),
                      obj.video)
 
         QMessageBox.information(self, '영상 제작 완료', '제작이 완료되었습니다.')

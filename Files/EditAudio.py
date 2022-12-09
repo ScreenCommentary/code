@@ -24,9 +24,9 @@ class EditAudio:
     '''
     def getTTS(self, items):
         TTS_audio = []
-        for i in items:
-            TTS_audio.append(AudioFileClip("../TTS/kor_FAST" + str(i+1) + ".wav"))
-            print(i)
+        for item in items:
+            # TTS_audio.append(AudioFileClip("../TTS/kor_FAST" + str(i+1) + ".wav"))
+            TTS_audio.append(AudioFileClip(item))
         return TTS_audio
 
     def getTimestamp(self, timestamp):
