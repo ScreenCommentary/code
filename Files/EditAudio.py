@@ -2,17 +2,19 @@ from moviepy.editor import *
 
 
 class EditAudio:
-    videoName = ""
-    timestamp = []
-
     def __init__(self, videoName, times):
         self.videoName = videoName
         self.timestamp = times
         try:
             self.video = VideoFileClip(videoName)
-        except Exception as IO:
+        except Exception:
             print("Not detection")
 
+    '''
+    function name : getOriginalAudio
+    do : get audio part from the input video
+    param : VideoFileClip object
+    '''
     def getOriginalAudio(self, videoclip):
         return videoclip.audio
 
@@ -29,6 +31,12 @@ class EditAudio:
             TTS_audio.append(AudioFileClip(item))
         return TTS_audio
 
+    '''
+    function name : getTimestamp
+    do : return timestamp list to insert TTS file
+    param : 
+        timeestamp
+    '''
     def getTimestamp(self, timestamp):
         return self.timestamp
 
@@ -39,9 +47,7 @@ class EditAudio:
         audio - original audio file
         tts - tts file list (getTTS())
         timestamp - time list to insert TTS (getTimestamp())
-    * test needed
     '''
-
     def setAudio(self, audio, tts):
         for i in range(len(self.timestamp)):
             # result = CompositeAudioClip([audio.set_start(i), tts]) # 오디오 합성하기
@@ -58,7 +64,6 @@ class EditAudio:
         audio - edited audio file (setAudio())
         video - original video to composite
     '''
-
     def setVideo(self, name, audio, video):
         video.audio = audio
         # result name?

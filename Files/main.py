@@ -307,15 +307,15 @@ class CWidget(QWidget):
         QMessageBox.warning(self, '경고', '영상 제작을 시작합니다. \n응답없음이 떠도 종료하지 마세요.\n확인을 누르면 진행됩니다.')
 
         # make input parameter (tts time list)
-        time_list = []
+        input_list = []
         tts_file_list = []
         for n, value in enumerate(self.timeline_list):  # loop over items in first column
             item = self.insert_TTS.takeItem(n, 0).text()
             if item != '':
-                time_list.append(self.timeline_list[n])
+                input_list.append(self.timeline_list[n])
                 tts_file_list.append(item)
 
-        obj = Audio(self.file[0], time_list)
+        obj = Audio(self.file[0], input_list)
         obj.setVideo(obj.videoName,
                      obj.setAudio(obj.getOriginalAudio(obj.video),
                                   obj.getTTS(tts_file_list)),
@@ -466,7 +466,7 @@ class VideoThread(QThread, QWidget):
         tmp.append(v)
         # print(v)
 
-        while (len(queue) > 0):
+        while len(queue) > 0:
             vv = queue.pop(0)
             # print(vv)
             if v + 1 == vv:
@@ -482,7 +482,7 @@ class VideoThread(QThread, QWidget):
         # 10개이상 연속된 non_speech_index (0.1초)
         end = []
         for i, con in enumerate(packet):
-            if (len(packet[i]) > 9):
+            if len(packet[i]) > 9:
                 end.append(packet[i])
         # for i, con in enumerate(end):
         #     print(con, len(con) * 0.02)
@@ -497,7 +497,7 @@ class VideoThread(QThread, QWidget):
         # # 연속된 인덱스의 timestamp를 가져옴
         for i, times in enumerate(start):
             # 1분짜리 영상이 30까지 있는걸로 봐서 2배를 해줘서 시간을 맞춤
-            if (round(start_len[i] * 0.02, 10) > 0.01):
+            if round(start_len[i] * 0.02, 10) > 0.01:
                 non_speech_timestamp_list.append(round((frames[times].timestamp * 2), 3))
                 non_speech_length_list.append(round(start_len[i] * 0.02, 25))
                 # print("non_speech_section start timestamp:", round((frames[times].timestamp * 2), 3))
