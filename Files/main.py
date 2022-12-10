@@ -311,6 +311,7 @@ class CWidget(QWidget):
         else:
             QCloseEvent.ignore()
 
+
     # 영상 제작 버튼 클릭 시 내용 삽입
     def makeMovie(self):
         QMessageBox.warning(self, '경고', '영상 제작을 시작합니다. \n응답없음이 떠도 종료하지 마세요.\n확인을 누르면 진행됩니다.')
@@ -320,6 +321,8 @@ class CWidget(QWidget):
         tts_file_list = [] #file list
 
         for n, value in enumerate(self.timeline_list):  # loop over items in first column
+            if self.insert_TTS.item(n,0)==None:
+                self.insert_TTS.setItem(n,0,QTableWidgetItem(''))
             item = self.insert_TTS.item(n, 0).text()
             if item != '':
                 input_list.append(value)
