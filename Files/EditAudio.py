@@ -22,7 +22,7 @@ class EditAudio:
     function name : getTTS
     do : make a list to save TTS file names, list length is count of TTS files
     param :
-        len - TTS file list count
+        items - audio file name list
     '''
     def getTTS(self, items):
         TTS_audio = []

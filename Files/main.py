@@ -317,12 +317,13 @@ class CWidget(QWidget):
 
         # make input parameter (tts time list)
         input_list = []
-        tts_file_list = []
+        tts_file_list = [] #file list
+
         for n, value in enumerate(self.timeline_list):  # loop over items in first column
-            temp = self.insert_TTS.item(n, 0).text()
-            if temp != '':
-                input_list.append(self.timeline_list[n])
-                tts_file_list.append(n)
+            item = self.insert_TTS.item(n, 0).text()
+            if item != '':
+                input_list.append(value)
+                tts_file_list.append(item)
 
         obj = Audio(self.file[0], input_list)
         obj.setVideo(obj.videoName,
