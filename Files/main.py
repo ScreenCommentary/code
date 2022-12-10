@@ -14,6 +14,15 @@ from PyQt5.QtGui import QPalette
 from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.uic import loadUi
+from media import CMultiMedia
+from player import *
+from EditAudio import EditAudio as Audio
+import os
+import sys
+import datetime
+import pandas as pd
+from PyQt5.QtWidgets import QTableWidgetItem, QTableWidget, QPushButton
+from gtts import gTTS
 from ffmpeg import audio
 from gtts import gTTS
 from openpyxl.reader.excel import load_workbook
@@ -310,10 +319,10 @@ class CWidget(QWidget):
         input_list = []
         tts_file_list = []
         for n, value in enumerate(self.timeline_list):  # loop over items in first column
-            item = self.insert_TTS.takeItem(n, 0).text()
-            if item != '':
+            temp = self.insert_TTS.item(n, 0).text()
+            if temp != '':
                 input_list.append(self.timeline_list[n])
-                tts_file_list.append(item)
+                tts_file_list.append(n)
 
         obj = Audio(self.file[0], input_list)
         obj.setVideo(obj.videoName,
