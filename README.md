@@ -32,7 +32,10 @@ At this point, the position where the voice will be guided should *not appear be
 ***
 **🧑‍💻 Technologies**
 
-🔗 Wiki page: 
+You can see more detailed information in below page.
+
+🔗 Wiki page: https://github.com/jha2ee/GraduationProject/wiki/Developed-version(2022-2)
+
 📕 PyQT5 GUI
 
 📙 MoviePy
