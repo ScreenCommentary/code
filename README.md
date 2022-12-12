@@ -11,7 +11,7 @@ At this time, screen commentary is an important link between the audience and th
 ***We thought about what would be inconvenient for blind people to encounter various media. Can Blind People Enjoy All YouTube Videos? That's the question that arises. So we thought of a screen commentary service for YouTube.***
 
 > 1. Provide convenience to screen commentators
-2. Automate audio editing and voice insertion
+> 2. Automate audio editing and voice insertion
 
 
 ***
@@ -31,14 +31,15 @@ At this point, the position where the voice will be guided should *not appear be
 
 ***
 **🧑‍💻 Technologies**
+
 🔗 Wiki page: 
-1. 📕 PyQT5 GUI
+📕 PyQT5 GUI
 
-2. 📙 MoviePy
+📙 MoviePy
 
-3. 📗 Vad algorithm(Webrtcvad)
+📗 Vad algorithm(Webrtcvad)
 
-4. 📘 Google TTS
+📘 Google TTS
 
 ***
 **📝 Data Analysis** (Not developed yet)
