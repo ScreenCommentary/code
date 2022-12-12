@@ -1,6 +1,7 @@
 # GraduationProject
 2022 graduation_project
 <h2> 화면 해설 프로그램(Screen commentary program)</h2>
+2022. 12. 10 Latest Demo version
 
 ***
 **📌 Objective**
@@ -9,13 +10,16 @@ At this time, screen commentary is an important link between the audience and th
 
 ***We thought about what would be inconvenient for blind people to encounter various media. Can Blind People Enjoy All YouTube Videos? That's the question that arises. So we thought of a screen commentary service for YouTube.***
 
+> 1. Provide convenience to screen commentators
+2. Automate audio editing and voice insertion
+
 
 ***
 **💻 Development Process**
-1. Understanding Information
-2. Priority Algorithm
-3. Identify where the voice will be guided
-4. Insert voice between images
+1. Understanding Information _(Not developed yet)_
+2. Priority Algorithm _(Not developed yet)_
+3. **Identify where the voice will be guided**
+4. **Insert audio in video**
  
 First, analyze what information is in the image.
 
@@ -26,7 +30,18 @@ Identify *where the information to be delivered will be guided to the voice*, an
 At this point, the position where the voice will be guided should *not appear before the screen in an empty space* that does not overlap the line.
 
 ***
-**📝 Data Analysis**
+**🧑‍💻 Technologies**
+🔗 Wiki page: 
+1. 📕 PyQT5 GUI
+
+2. 📙 MoviePy
+
+3. 📗 Vad algorithm(Webrtcvad)
+
+4. 📘 Google TTS
+
+***
+**📝 Data Analysis** (Not developed yet)
 1. Voice data
 2. Subtitle data
 3. Image(Video) data
@@ -36,7 +51,7 @@ This data uses for *Priority algorithm*, *Position to insert tts*, *Understandin
 
 ***
 **👀 Reference**
-화면해설 365 법칙 : <https://www.youtube.com/watch?v=AgXfppcFzTI>
+1. 화면해설 365 법칙 : <https://www.youtube.com/watch?v=AgXfppcFzTI>
 ```
 3 : 
 For innate blindness
