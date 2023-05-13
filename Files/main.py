@@ -77,6 +77,8 @@ class CWidget(QWidget):
         self.btn_pause.clicked.connect(self.clickPause)
         self.btn_forward.clicked.connect(self.clickForward)
         self.btn_prev.clicked.connect(self.clickPrev)
+        self.btn_plus.clicked.connect(self.plusRow)
+        self.btn_minus.clicked.connect(self.minusRow)
         # 영상 제작 버튼
         self.btn_makemovie.clicked.connect(self.makeMovie)
 
@@ -348,6 +350,17 @@ class CWidget(QWidget):
             self.mp.posMoveMedia(time)
         else:
             pass
+    def plusRow(self):
+        for i in self.timeline.selectedIndexes():
+            self.timeline.insertRow(i.row())
+            self.insert_TTS.insertRow(i.row())
+
+
+
+    def minusRow(self):
+        for i in self.timeline.selectedIndexes():
+            self.timeline.removeRow(i.row())
+            self.insert_TTS.removeRow(i.row())
 
 
 class ThreadClass(QThread, QWidget):
