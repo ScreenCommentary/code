@@ -146,13 +146,30 @@
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_script_add">
-         <property name="text">
-          <string>대본 추가</string>
-         </property>
-        </widget>
+        <layout class="QVBoxLayout" name="verticalLayout_7">
+         <item>
+          <widget class="QLabel" name="lable_3">
+           <property name="text">
+            <string>TTS볼륨</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="volume_control"/>
+         </item>
+        </layout>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_script_add">
+       <property name="text">
+        <string>대본 추가</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QProgressBar" name="progressBar">

@@ -39,6 +39,7 @@ QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 class CWidget(QWidget):
     file_sender = pyqtSignal(object)
     speed_sender = pyqtSignal(float)
+    volume_sender = pyqtSignal(float)
     list_add = pyqtSignal(object)
 
     # file_sender2 = pyqtSignal(object)
@@ -107,6 +108,7 @@ class CWidget(QWidget):
         self.thread = ThreadClass(parent=self)
         self.file_sender.connect(self.thread.ToTTS2)
         self.speed_sender.connect(self.thread.speedValue)
+        self.volume_sender.connect(self.thread.volumeValue)
         self.thread2 = VideoThread(parent=self)
         self.list_add.connect(self.thread2.executeVad)
         # self.thread3 = MakeMovieThread(parent=self)
@@ -117,6 +119,9 @@ class CWidget(QWidget):
         self.speed_control.setValue(1.0)
         self.speed = 0
         self.file = ''
+        #spinbox- volume control
+        self.volume_control.setValue(1.0)
+        self.volume=0
 
     def clickAdd(self):
         files, ext = QFileDialog.getOpenFileNames(self, "Open Movie", '',
@@ -260,6 +265,7 @@ class CWidget(QWidget):
         self.thread.countChanged.connect(self.onCountChanged)
         self.thread.start()
         self.speed_sender.emit(self.speed_control.value())
+        self.volume_sender.emit(self.volume_control.value())
         self.file_sender.emit(file)
         # TTS fileList
         path_dir = "../TTS/*"
@@ -363,8 +369,7 @@ class CWidget(QWidget):
         for i in self.timeline.selectedIndexes():
             self.timeline.insertRow(i.row())
             self.insert_TTS.insertRow(i.row())
-            self.timeline.setItem(i.row(),0,QTableWidgetItem('0'))
-
+            self.timeline.setItem(i.row(), 0, QTableWidgetItem('0'))
 
     def minusRow(self):
         for i in self.timeline.selectedIndexes():
@@ -377,12 +382,15 @@ class ThreadClass(QThread, QWidget):
 
     def __init__(self, parent):
         super().__init__(parent)
+        self.volume_value = 0.0
         self.parent = parent
         self._mutex = QMutex()
         self.speed_value = 0.0
 
     def speedValue(self, speed):
         self.speedValue = speed
+    def volumeValue(self, volume):
+        self.volumeValue= volume
 
     def run(self):
         self._mutex.lock()
@@ -408,8 +416,10 @@ class ThreadClass(QThread, QWidget):
                 eng_wav.save('../TTS/kor' + str(i - 1) + '.wav')
                 audio.a_speed('../TTS/kor' + str(i - 1) + '.wav', self.speedValue,
                               '../TTS/kor_FAST' + str(i - 1) + '.wav')
-                if os.path.exists('../TTS/kor' + str(i - 1) + '.wav'):
-                    os.remove('../TTS/kor' + str(i - 1) + '.wav')
+                audio.a_volume('../TTS/kor_FAST' + str(i - 1) + '.wav', self.volumeValue,
+                               '../TTS/kor' + str(i - 1) + '.wav')
+                if os.path.exists('../TTS/kor_FAST' + str(i - 1) + '.wav'):
+                    os.remove('../TTS/kor_FAST' + str(i - 1) + '.wav')
                 else:
                     print("파일 존재 안함")
                 self.countChanged.emit(count)
