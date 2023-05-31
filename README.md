@@ -1,74 +1,69 @@
-# GraduationProject
-2022 graduation_project
-<h2> 화면 해설 프로그램(Screen commentary program)</h2>
-2022. 12. 10 Latest Demo version
 
-***
-**📌 Objective**
-> How much can we understand if we close our eyes or cover our ears? It is called **"Barrier Free"** to add screen commentary and subtitles so that both disabled and non-disabled people can see and feel the work equally.
-At this time, screen commentary is an important link between the audience and the production.
+# Screen Commentary Video Production Program
 
-***We thought about what would be inconvenient for blind people to encounter various media. Can Blind People Enjoy All YouTube Videos? That's the question that arises. So we thought of a screen commentary service for YouTube.***
+This program allows you to produce screen commentary videos by adding audio commentary to video files. The program supports various functionalities such as adding videos, adding script files, playing, pausing, stopping, and adjusting the volume of the videos.
 
-> 1. Provide convenience to screen commentators
-> 2. Automate audio editing and voice insertion
+## Prerequisites
+
+Before running this program, make sure you have the following dependencies installed:
+
+- `librosa` (version 0.9.1)
+- `webrtcvad` (version 2.0.10)
+- `PyQt5`
+
+## Installation
+
+1. Clone the repository:
+
+2. Install the required dependencies:
 
 
-***
-**💻 Development Process**
-1. Understanding Information _(Not developed yet)_
-2. Priority Algorithm _(Not developed yet)_
-3. **Identify where the voice will be guided**
-4. **Insert audio in video**
- 
-First, analyze what information is in the image.
+## Usage
 
-Next, the algorithm determines *which* of the many pieces of information analyzed and how to convey it.
+1. Run the program:
 
-Identify *where the information to be delivered will be guided to the voice*, and insert it appropriately between images to guide it.
+2. Click on the "Add Movie" button to select video files to add to the program.
 
-At this point, the position where the voice will be guided should *not appear before the screen in an empty space* that does not overlap the line.
+3. Click on the "Add Script" button to select an Excel file containing the script for the commentary. The script should be in the first sheet of the Excel file.
 
-***
-**🧑‍💻 Technologies**
+4. Use the various buttons provided to control the playback of the video, such as play, pause, stop, forward, and previous.
 
-You can see more detailed information in below page.
+5. Use the volume slider to adjust the volume of the video.
 
-🔗 Wiki page: https://github.com/jha2ee/GraduationProject/wiki/Developed-version(2022-2)
+6. Use the timeline to set the start timestamp and length of the commentary for each segment of the video.
 
-📕 PyQT5 GUI
+7. Double-click on the TTS (Text-to-Speech) list to play the corresponding audio commentary.
 
-📙 MoviePy
+8. Click on the "Make Movie" button to start the video production process. The program will create a new video file with the audio commentary added.
 
-📗 Vad algorithm(Webrtcvad)
+## Contributing
 
-📘 Google TTS
+Contributions are welcome! If you find any issues or have suggestions for improvement, please create a new issue or submit a pull request.
 
-***
-**📝 Data Analysis** (Not developed yet)
-1. Voice data
-2. Subtitle data
-3. Image(Video) data
-4. Meta data
+## License
 
-This data uses for *Priority algorithm*, *Position to insert tts*, *Understanding context*.
+This program is licensed under the [MIT License](LICENSE).
 
-***
-**👀 Reference**
-1. 화면해설 365 법칙 : <https://www.youtube.com/watch?v=AgXfppcFzTI>
-```
-3 : 
-For innate blindness
-Elementary school students can understand
-Considering that the non-disabled will watch it together
 
-6 :
-Curious sounds, characters, times and places, visual information, situations, directives
 
-5 :
-From the observer's point of view, In the empty space between lines, 
-Present form from an observer's point of view,
-The commentary doesn't come out before the screen, 
-Can draw a picture with a natural sentence
+## Korean
+### 설치 및 실행 방법
 
-```
+Python 3.7 이상의 버전을 설치합니다.
+필요한 라이브러리를 설치합니다. (pip install -r requirements.txt)
+main.py 파일을 실행합니다.
+### 기능
+
+1. 동영상 파일 추가
+프로그램에 동영상 파일을 추가할 수 있습니다. 지원하는 확장자는 mp4, mpg, mpeg, avi, wma, mka입니다.
+2. 해설 스크립트 추가
+프로그램에 해설 스크립트를 추가할 수 있습니다. 스크립트는 Excel 파일 형식(xls, xlsx)으로 제공되어야 합니다.
+3. TTS 변환
+추가된 해설 스크립트를 음성으로 변환할 수 있습니다. 변환된 음성은 TTS 목록에 표시됩니다.
+4. 음성 삽입
+TTS 목록에서 선택한 음성을 원하는 시간대에 삽입할 수 있습니다. 시간대는 동영상 파일의 타임라인으로 표시되며, 마우스 더블 클릭으로 삽입할 위치를 지정할 수 있습니다.
+5. 영상 제작
+삽입한 음성을 포함한 최종 영상을 제작합니다. 제작된 영상은 프로그램에서 확인할 수 있습니다.
+### 주의사항
+
+프로그램 종료 시 TTS 파일과 임시 파일은 자동으로 삭제됩니다.
