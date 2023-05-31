@@ -129,6 +129,7 @@ class CWidget(QWidget):
             self.thread2.start()
             self.list_add.emit(files)
             self.writetimeTableWidget(len(self.timeline_list))
+
         else:
             print("file unselected")
 
@@ -233,7 +234,7 @@ class CWidget(QWidget):
         # 테이블 위젯 값 쓰기
         self.list.clear()
         # select dataframe
-        df = self.df_list[id];
+        df = self.df_list[id]
         # table write
         col = len(df.keys())
         self.list.setColumnCount(col)
@@ -316,7 +317,11 @@ class CWidget(QWidget):
     # 영상 제작 버튼 클릭 시 내용 삽입
     def makeMovie(self):
         QMessageBox.warning(self, '경고', '영상 제작을 시작합니다. \n응답없음이 떠도 종료하지 마세요.\n확인을 누르면 진행됩니다.')
-
+        timelines = []
+        for j in range(self.timeline.rowCount()):
+            timelines.append(self.timeline.item(j, 0).text())
+        self.timelineListAdd(timelines)
+        print(self.timeline_list)
         # make input parameter (tts time list)
         input_list = []
         tts_file_list = []  # file list
@@ -345,16 +350,20 @@ class CWidget(QWidget):
         row = self.timeline.currentIndex().row()
         column = self.timeline.currentIndex().column()
         if column == 0:
-            data = self.timeline.item(row, column).text()
-            time = int(float(data) * 1000)
-            self.mp.posMoveMedia(time)
+            if self.timeline.item(row, column) is None:
+                pass
+            else:
+                data = self.timeline.item(row, column).text()
+                time = int(float(data) * 1000)
+                self.mp.posMoveMedia(time)
         else:
             pass
+
     def plusRow(self):
         for i in self.timeline.selectedIndexes():
             self.timeline.insertRow(i.row())
             self.insert_TTS.insertRow(i.row())
-
+            self.timeline.setItem(i.row(),0,QTableWidgetItem('0'))
 
 
     def minusRow(self):
